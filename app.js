@@ -73,73 +73,6 @@
     });
   });
   activateProject(0);
-  root.classList.add('is-enhanced');
-  $$('[data-open-project]').forEach(cover => cover.addEventListener('click', event => {
-    event.preventDefault();
-    activateProject(cover.dataset.openProject === 'finance' ? 1 : 0);
-    openChapter('work', cover);
-  }));
-
-  // A compact, keyboard-accessible map is an alternative way to travel.
-  const worldMap = $('.world-map');
-  const mapToggle = $('.map-toggle');
-  function closeMap() { if (worldMap.open) worldMap.close(); }
-  function openMap() {
-    if (root.dataset.intro || worldMap.open) return;
-    worldMap.showModal();
-    document.body.classList.add('map-open');
-  }
-  mapToggle.addEventListener('click', openMap);
-  $('.close-map').addEventListener('click', closeMap);
-  worldMap.addEventListener('close', () => document.body.classList.remove('map-open'));
-  worldMap.addEventListener('click', event => {
-    if (event.target !== worldMap) return;
-    const bounds = worldMap.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeMap();
-  });
-  function travel(hash, focusHeading = false) {
-    const target = $(hash);
-    if (!target) return;
-    history.replaceState(null, '', hash);
-    target.scrollIntoView({ behavior: motion.matches ? 'auto' : 'smooth' });
-    if (focusHeading) {
-      const heading = $('h2, h3', target) || target;
-      heading.tabIndex = -1;
-      heading.focus({ preventScroll: true });
-    }
-  }
-  $$('.map-place').forEach(link => link.addEventListener('click', event => {
-    event.preventDefault();
-    closeMap();
-    requestAnimationFrame(() => openChapter(link.getAttribute('href').slice(1), mapToggle));
-  }));
-  document.addEventListener('keydown', event => {
-    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || root.dataset.intro) return;
-    if (event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
-    if (chapterDialog.open && event.key.toLowerCase() === 'm') return;
-    if (event.key.toLowerCase() === 'm') {
-      event.preventDefault();
-      worldMap.open ? closeMap() : openMap();
-    }
-    if (!worldMap.open && ['1', '2', '3', '4'].includes(event.key)) {
-      event.preventDefault();
-      openChapter(['work', 'experience', 'about', 'contact'][Number(event.key) - 1]);
-    }
-  });
-
-  // Small optional encounters; a pointer and a keyboard work equally well.
-  $$('[data-creature]').forEach(creature => {
-    creature.title = creature.getAttribute('aria-label');
-    let reactionTimer;
-    creature.addEventListener('click', () => {
-      clearTimeout(reactionTimer);
-      creature.classList.remove('is-petted');
-      requestAnimationFrame(() => creature.classList.add('is-petted'));
-      toast(creature.dataset.message);
-      reactionTimer = setTimeout(() => creature.classList.remove('is-petted'), 950);
-    });
-  });
-
   const copyButton = $('.copy-email');
   let copyTimer;
   copyButton.addEventListener('click', async () => {
@@ -183,15 +116,14 @@
   const chapterContent = $('.chapter-content');
   const chapterReader = $('.chapter-reader');
   const chapters = [
-    { id: 'work', letter: 'J', title: 'Selected work', kicker: '01 / RESEARCH & IDEAS', intro: 'Real questions. Real data. Two ways of looking a little closer.' },
-    { id: 'experience', letter: 'o', title: 'Experience', kicker: '02 / LEARNING BY DOING', intro: 'Product, cloud platforms, and research. A few things I’ve learned along the way.' },
-    { id: 'about', letter: 'e', title: 'A little about me', kicker: '03 / BACKGROUND & BEYOND', intro: 'What I’m learning, what I work with, and a little life away from the keyboard.' },
-    { id: 'contact', letter: 'y', title: 'Let’s talk', kicker: '04 / SAY HELLO', intro: 'A good conversation is a pretty good place to start.' },
+    { id: 'about', letter: 'J', title: 'Journey', kicker: '01 / MY STORY SO FAR', intro: 'Where I’m learning, what I work with, and a little life away from the keyboard.' },
+    { id: 'work', letter: 'o', title: 'Outcomes', kicker: '02 / SELECTED WORK', intro: 'Two research projects. From real questions and real data to a little more understanding.' },
+    { id: 'experience', letter: 'e', title: 'Experience', kicker: '03 / LEARNING BY DOING', intro: 'Product, cloud platforms, and research. A few things I’ve learned along the way.' },
+    { id: 'contact', letter: 'y', title: 'You & me', kicker: '04 / YOUR NEXT COLLABORATOR', intro: 'A good conversation is a pretty good place to start.' },
   ];
   let activeChapter = -1, chapterPlaceholder = null, chapterSection = null;
   let chapterReturnFocus = null, chapterScrollY = 0;
   const jumpAnimations = new Set();
-  const wordmarkWorld = $('.joey-world');
   function restoreChapterContent() {
     if (chapterSection && chapterPlaceholder) chapterPlaceholder.replaceWith(chapterSection);
     chapterSection = chapterPlaceholder = null;
@@ -217,10 +149,11 @@
     const index = chapters.findIndex(chapter => chapter.id === id);
     if (index < 0) return;
     if (!chapterDialog.open) {
-      chapterReturnFocus = trigger;
+      chapterReturnFocus = trigger?.matches?.('a, button, [tabindex]') ? trigger : $(`.joey-letter[data-chapter="${id}"]`);
       chapterScrollY = scrollY;
     }
     restoreChapterContent();
+    resetWordmarkPointer();
     const chapter = chapters[index];
     activeChapter = index;
     chapterSection = $(`#${id}`);
@@ -230,6 +163,13 @@
     chapterSection.before(chapterPlaceholder);
     chapterContent.append(chapterSection);
     chapterDialog.dataset.chapter = id;
+    history.replaceState(null, '', `#${id}`);
+    $$('.joey-letter, .main-nav a').forEach(link => {
+      const selected = link.getAttribute('href') === `#${id}`;
+      link.setAttribute('aria-expanded', String(selected));
+      if (selected) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
     chapterDialog.style.setProperty('--letter', index);
     $('#chapter-heading').textContent = chapter.title;
     $('.chapter-kicker').textContent = chapter.kicker;
@@ -268,12 +208,15 @@
     document.body.classList.remove('chapter-open');
     scrollTo({ top: chapterScrollY, behavior: 'instant' });
     chapterReturnFocus?.focus({ preventScroll: true });
-    scheduleScroll();
+    history.replaceState(null, '', location.pathname + location.search);
+    $$('.joey-letter, .main-nav a').forEach(link => { link.setAttribute('aria-expanded', 'false'); link.removeAttribute('aria-current'); });
   }
   chapterDialog.addEventListener('close', finishChapterClose);
   chapterDialog.addEventListener('cancel', event => { event.preventDefault(); closeChapter(); });
   $$('.joey-letter').forEach(letter => {
     letter.setAttribute('aria-haspopup', 'dialog');
+    letter.setAttribute('aria-controls', 'chapter-dialog');
+    letter.setAttribute('aria-expanded', 'false');
     letter.addEventListener('click', event => {
       event.preventDefault();
       bounceLetter($('.joey-glyph', letter));
@@ -283,28 +226,138 @@
       if (event.key === ' ') { event.preventDefault(); letter.click(); }
     });
   });
-  $$('.main-nav a, .hotbar a, .hero-name > .pixel-button').forEach(link => link.addEventListener('click', event => {
+  $$('.main-nav a').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
     openChapter(link.getAttribute('href').slice(1), link);
   }));
-  // A subtle lean gives each object weight without moving its click target.
+  // A pointer-local displacement field makes contact feel soft, while each
+  // link keeps a stable hit area and its normal click/keyboard behavior.
+  const touchStates = [];
+  let touchFrame = 0;
+  const svgNS = 'http://www.w3.org/2000/svg';
+  function makeSVG(tag, attributes) {
+    const element = document.createElementNS(svgNS, tag);
+    Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+    return element;
+  }
+  const filterSheet = makeSVG('svg', { width: 0, height: 0, 'aria-hidden': 'true', focusable: 'false' });
+  filterSheet.style.cssText = 'position:absolute;pointer-events:none;overflow:hidden';
+  const filterDefs = makeSVG('defs', {});
+  filterSheet.append(filterDefs);
+  document.body.append(filterSheet);
+
+  function makePressureMap() {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 128;
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+    const pixels = context.createImageData(128, 128);
+    for (let y = 0; y < 128; y++) for (let x = 0; x < 128; x++) {
+      const dx = (x - 63.5) / 63.5, dy = (y - 63.5) / 63.5;
+      const radius = Math.hypot(dx, dy);
+      const push = radius > 0 && radius < 1 ? Math.sin(Math.PI * radius) ** 1.5 * 110 / radius : 0;
+      const i = (y * 128 + x) * 4;
+      pixels.data[i] = Math.round(128 + dx * push);
+      pixels.data[i + 1] = Math.round(128 + dy * push);
+      pixels.data[i + 2] = 128;
+      pixels.data[i + 3] = 255;
+    }
+    context.putImageData(pixels, 0, 0);
+    return canvas.toDataURL();
+  }
+  const pressureMap = makePressureMap();
+  function requestTouchFrame() { if (!touchFrame && !motion.matches) touchFrame = requestAnimationFrame(updateTouch); }
+  function updateTouch() {
+    touchFrame = 0;
+    if (motion.matches || chapterDialog.open) { resetJellyTouch(); return; }
+    let moving = false;
+    touchStates.forEach(state => {
+      if (!state.hover && Math.abs(state.pressure) < .001 && Math.abs(state.velocity) < .001) {
+        state.displacement?.setAttribute('scale', '0');
+        state.link.classList.remove('is-touching');
+        return;
+      }
+      const target = state.hover ? 1 : 0;
+      state.velocity = (state.velocity + (target - state.pressure) * .16) * .68;
+      state.pressure += state.velocity;
+      const bounds = state.art.getBoundingClientRect();
+      const width = state.art.offsetWidth, height = state.art.offsetHeight;
+      if (!width || !height) return;
+      const targetX = Math.max(0, Math.min(width, (state.clientX - bounds.left) / bounds.width * width));
+      const targetY = Math.max(0, Math.min(height, (state.clientY - bounds.top) / bounds.height * height));
+      state.x += (targetX - state.x) * .35;
+      state.y += (targetY - state.y) * .35;
+      const radius = Math.max(20, Math.min(82, width * .34));
+      if (state.field) {
+        state.field.setAttribute('x', (state.x - radius).toFixed(2));
+        state.field.setAttribute('y', (state.y - radius).toFixed(2));
+        state.field.setAttribute('width', (radius * 2).toFixed(2));
+        state.field.setAttribute('height', (radius * 2).toFixed(2));
+        state.displacement.setAttribute('scale', (state.pressure * Math.min(30, width * .12)).toFixed(2));
+      }
+      state.glyph.style.setProperty('--touch-scale-x', (1 + state.pressure * .014).toFixed(4));
+      state.glyph.style.setProperty('--touch-scale-y', (1 - state.pressure * .018).toFixed(4));
+      moving = true;
+    });
+    if (moving) requestTouchFrame();
+  }
+  function resetJellyTouch() {
+    cancelAnimationFrame(touchFrame);
+    touchFrame = 0;
+    touchStates.forEach(state => {
+      state.hover = false;
+      state.pressure = state.velocity = 0;
+      state.displacement?.setAttribute('scale', '0');
+      state.link.classList.remove('is-touching');
+      state.glyph.style.removeProperty('--touch-scale-x');
+      state.glyph.style.removeProperty('--touch-scale-y');
+    });
+  }
   function resetWordmarkPointer() {
     $$('.joey-glyph').forEach(glyph => {
       glyph.style.removeProperty('--jelly-lean');
       glyph.style.removeProperty('--jelly-rise');
     });
+    resetJellyTouch();
   }
-  $$('.joey-letter').forEach(letter => {
-    letter.addEventListener('pointermove', event => {
+  $$('.joey-letter').forEach((link, index) => {
+    const art = $('.jelly-art', link), glyph = $('.joey-glyph', link);
+    const state = { link, art, glyph, x: 0, y: 0, clientX: 0, clientY: 0, pressure: 0, velocity: 0, hover: false };
+    if (pressureMap) {
+      const filter = makeSVG('filter', { id: `jelly-pressure-${index}`, x: '-25%', y: '-25%', width: '150%', height: '150%', 'color-interpolation-filters': 'sRGB', primitiveUnits: 'userSpaceOnUse' });
+      const neutral = makeSVG('feFlood', { 'flood-color': 'rgb(128,128,128)', result: 'neutral' });
+      state.field = makeSVG('feImage', { href: pressureMap, x: 0, y: 0, width: 1, height: 1, preserveAspectRatio: 'none', result: 'pressure' });
+      const field = makeSVG('feBlend', { in: 'pressure', in2: 'neutral', mode: 'normal', result: 'field' });
+      state.displacement = makeSVG('feDisplacementMap', { in: 'SourceGraphic', in2: 'field', scale: 0, xChannelSelector: 'R', yChannelSelector: 'G' });
+      filter.append(neutral, state.field, field, state.displacement);
+      filterDefs.append(filter);
+      art.style.filter = `url(#jelly-pressure-${index})`;
+    }
+    touchStates.push(state);
+    function touch(event) {
       if (motion.matches || event.pointerType === 'touch') return;
-      const bounds = letter.getBoundingClientRect();
-      const x = Math.max(-.5, Math.min(.5, (event.clientX - bounds.left) / bounds.width - .5));
-      $('.joey-glyph', letter).style.setProperty('--jelly-lean', `${(x * 9).toFixed(2)}deg`);
-      $('.joey-glyph', letter).style.setProperty('--jelly-rise', '-7px');
-    });
-    letter.addEventListener('pointerleave', () => {
-      $('.joey-glyph', letter).style.removeProperty('--jelly-lean');
-      $('.joey-glyph', letter).style.removeProperty('--jelly-rise');
+      state.clientX = event.clientX;
+      state.clientY = event.clientY;
+      if (!state.hover) {
+        const bounds = art.getBoundingClientRect();
+        state.x = (event.clientX - bounds.left) / bounds.width * art.offsetWidth;
+        state.y = (event.clientY - bounds.top) / bounds.height * art.offsetHeight;
+      }
+      state.hover = true;
+      link.classList.add('is-touching');
+      const bounds = link.getBoundingClientRect();
+      const lean = Math.max(-.5, Math.min(.5, (event.clientX - bounds.left) / bounds.width - .5));
+      glyph.style.setProperty('--jelly-lean', `${(lean * 4).toFixed(2)}deg`);
+      glyph.style.setProperty('--jelly-rise', '-3px');
+      requestTouchFrame();
+    }
+    glyph.addEventListener('pointerenter', touch);
+    glyph.addEventListener('pointermove', touch);
+    glyph.addEventListener('pointerleave', () => {
+      state.hover = false;
+      glyph.style.removeProperty('--jelly-lean');
+      glyph.style.removeProperty('--jelly-rise');
+      requestTouchFrame();
     });
   });
   addEventListener('blur', resetWordmarkPointer);
@@ -312,101 +365,11 @@
   jellyImage.onerror = () => root.classList.add('jelly-unavailable');
   jellyImage.src = 'assets/jelly-letters.png';
 
-  const sceneLayers = $$('.creature, .environment-block').map((element, index) => ({
-    element, section: element.closest('section'), depth: [1, -.8, .7, -1, .8][index % 5],
-  }));
-  const experienceRows = $$('.experience-row');
-  const sectionLabels = {
-    home: 'HELLO, I’M JOEY', work: 'SELECTED WORK', experience: 'EXPERIENCE',
-    about: 'ABOUT ME', contact: 'LET’S TALK',
-  };
-  let currentLocation = '';
-  if ('IntersectionObserver' in window && !motion.matches) {
-    const creatureObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        if (!entry.target.classList.contains('is-petted')) {
-          entry.target.classList.add('is-awake');
-          setTimeout(() => entry.target.classList.remove('is-awake'), 700);
-        }
-        creatureObserver.unobserve(entry.target);
-      });
-    }, { threshold: .5 });
-    $$('.section .creature').forEach(creature => creatureObserver.observe(creature));
-  }
-
-  // Content remains visible without JavaScript or with reduced motion.
-  const revealElements = $$('.reveal');
-  if ('IntersectionObserver' in window && !motion.matches) {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-revealed');
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: .06 });
-    revealElements.forEach(element => observer.observe(element));
-    root.classList.add('js-motion');
-  }
-  const sectionLinks = $$('.main-nav a, .hotbar a');
-  const sectionIds = ['home', 'work', 'experience', 'about', 'contact'];
-  let scrollFrame;
-  function updateScroll() {
-    scrollFrame = 0;
-    if (chapterDialog.open) return;
-    const range = root.scrollHeight - innerHeight;
-    $('.reading-progress').style.transform = `scaleX(${range > 0 ? Math.min(1, scrollY / range) : 0})`;
-    let current = 'home';
-    sectionIds.forEach(id => { if ($(`#${id}`).getBoundingClientRect().top <= innerHeight * .4) current = id; });
-    sectionLinks.forEach(link => {
-      if (link.getAttribute('href') === `#${current}`) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    });
-    if (currentLocation !== current) {
-      currentLocation = current;
-      $('.hotbar-location').textContent = sectionLabels[current];
-      $('.hotbar').dataset.zone = current;
-    }
-    $$('.hotbar a[data-section]').forEach(link => {
-      const bounds = $(`#${link.dataset.section}`).getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, (innerHeight * .4 - bounds.top) / Math.max(1, bounds.height)));
-      link.style.setProperty('--zone-progress', progress.toFixed(3));
-    });
-    const heroBounds = $('.hero').getBoundingClientRect();
-    const heroDepth = Math.max(0, Math.min(1, -heroBounds.top / Math.max(1, heroBounds.height)));
-    wordmarkWorld.style.setProperty('--word-scroll', `${motion.matches ? 0 : Math.min(28, heroDepth * 42).toFixed(2)}px`);
-    const ribbon = $('.world-ribbon');
-    const ribbonDepth = Math.max(-30, Math.min(30, (innerHeight * .5 - ribbon.getBoundingClientRect().top) * .045));
-    ribbon.style.setProperty('--ribbon-shift', `${motion.matches ? 0 : ribbonDepth.toFixed(2)}px`);
-    const sectionBounds = new Map();
-    sceneLayers.forEach(({ element, section, depth }) => {
-      if (!sectionBounds.has(section)) sectionBounds.set(section, section.getBoundingClientRect());
-      const bounds = sectionBounds.get(section);
-      const limit = innerWidth <= 600 ? 8 : 16;
-      const shift = Math.max(-limit, Math.min(limit, (innerHeight * .5 - bounds.top - bounds.height * .5) * .045 * depth));
-      element.style.setProperty('--scene-shift', `${motion.matches ? 0 : shift.toFixed(2)}px`);
-    });
-    let activeRow = null, closestDistance = Infinity;
-    experienceRows.forEach(row => {
-      const bounds = row.getBoundingClientRect();
-      const distance = Math.abs(bounds.top + bounds.height * .5 - innerHeight * .45);
-      if (bounds.bottom > innerHeight * .2 && bounds.top < innerHeight * .75 && distance < closestDistance) {
-        activeRow = row;
-        closestDistance = distance;
-      }
-    });
-    experienceRows.forEach(row => row.classList.toggle('is-current', row === activeRow));
-  }
-  function scheduleScroll() { if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScroll); }
-  addEventListener('scroll', scheduleScroll, { passive: true });
-  addEventListener('resize', scheduleScroll, { passive: true });
-  updateScroll();
-
   const intro = $('.world-intro');
   const introTrack = $('.intro-track');
   const introFill = $('.intro-fill');
   const introNumber = $('.intro-number');
-  const introBackground = $$('.site-header, main, .site-footer, .hotbar');
+  const introBackground = $$('.site-header, main, .site-footer');
   let introFrame, introTimer, introFallback, introActive = false, replaying = false;
   function revealHero() {
     $('.hero').classList.remove('hero-enter');
@@ -474,10 +437,22 @@
       jumpAnimations.forEach(animation => animation.cancel());
       jumpAnimations.clear();
       resetWordmarkPointer();
-      revealElements.forEach(element => element.classList.add('is-revealed'));
-      $$('.creature.is-awake').forEach(creature => creature.classList.remove('is-awake'));
     }
-    scheduleScroll();
   });
+  root.classList.add('is-enhanced');
+  chapterDialog.id = 'chapter-dialog';
+  const requestedChapter = location.hash.slice(1);
   startIntro();
+  if (chapters.some(chapter => chapter.id === requestedChapter)) openChapter(requestedChapter);
+  addEventListener('hashchange', () => {
+    const id = location.hash.slice(1);
+    if (chapters.some(chapter => chapter.id === id)) openChapter(id);
+    else closeChapter();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || root.dataset.intro) return;
+    if (event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+    const index = ['1', '2', '3', '4'].indexOf(event.key);
+    if (index >= 0) { event.preventDefault(); openChapter(chapters[index].id); }
+  });
 })();

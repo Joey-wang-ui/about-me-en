@@ -10,21 +10,20 @@ From the repository root, run `python3 -m http.server 8000 --bind 127.0.0.1`. Op
 
 ## Interactions
 
-- Two sticky research tabs, including arrow-key navigation and links from the hero cards; switching mid-read brings the new project title into view.
-- Day/night theme, remembered locally for this English version.
-- Navigation overlay, keyboard shortcuts **M** and **1–4**, and floating section links.
-- Small sculptural ornaments react to clicks or keyboard activation and move gently with scrolling.
-- Four glossy jelly letters (Joey, with a capital J) drift, bob, and gently wobble at rest, and lean toward the pointer. Each opens a chapter: J → work, o → experience, e → about, y → contact. Enter and Space also work.
+- A compact landing page keeps the focus on four jelly letters and a short introduction. Detailed content appears in its chapter reader rather than repeating below the homepage.
+- **J → Journey:** education, toolkit, milestones, and interests. **o → Outcomes:** two research projects. **e → Experience:** internships. **y → You & me:** contact and email.
+- Letters drift gently at rest. The pointer makes a local dent using an SVG displacement field; a damped spring relaxes the jelly after contact. The clickable link areas remain stable.
 - Chapters use a split reader on desktop and a native scrolling sheet on mobile. Previous/next controls, Escape, focus restoration, and retained research-tab/email state are supported.
-- Scroll interactions include hero parallax, chapter reveals, a current-experience highlight, and a live location/progress display in the floating navigation.
-- Email copy, optional entrance replay, and scroll progress.
-- Reduced-motion support; content remains readable without JavaScript.
+- Header links, Enter, Space, and shortcuts **1–4** open the same four chapters. URLs `#about`, `#work`, `#experience`, and `#contact` open a chapter directly.
+- The two research tabs support arrow keys, Home, and End; switching mid-read returns to the new project title.
+- Day/night theme, email copy, and optional entrance replay.
+- Reduced-motion support. Without JavaScript, all chapter content remains readable below the landing page and letter links scroll to it.
 
 ## Content and assets
 
 The English text preserves the Chinese page's research metrics, limitations, internships, and education dates. The USC period is explicitly future study beginning January 2027. Company names use English translations; the third internship title is kept as “Intern”. The original TOEFL value is preserved as written.
 
-`assets/sprites.svg` contains original rounded line icons. `assets/jelly-letters.png`, `assets/jelly-j-uppercase.png`, and `assets/jelly-charms.png` are newly generated transparent artwork; no scripts, images, or proprietary font files from the reference site are bundled. `playful.css` defines the current visual direction. Nunito, used throughout the page and chapter readers, is self-hosted along with the earlier Pixelify Sans and Instrument Sans assets; their SIL Open Font License texts are in `assets/fonts/`.
+`assets/sprites.svg` contains original rounded line icons. `assets/jelly-letters.png`, `assets/jelly-j-uppercase.png`, and `assets/jelly-charms.png` are newly generated transparent artwork; no scripts, images, or proprietary font files from the reference site are bundled. `playful.css` defines the materials and typography; `landing.css` defines the compact homepage and pointer-contact states. Nunito, used throughout the page and chapter readers, is self-hosted along with the earlier Pixelify Sans and Instrument Sans assets; their SIL Open Font License texts are in `assets/fonts/`.
 
 ## Publishing
 

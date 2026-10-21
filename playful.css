@@ -10,7 +10,7 @@
   --paper-shadow:0 12px 36px -24px #37412e38;
   --body:Nunito,"Arial Rounded MT Bold",Arial,sans-serif;
   --pixel:var(--body);
-  --jelly-drift:8px;--jelly-float:24px;--jelly-turn:4.5deg;
+  --jelly-drift:3.5px;--jelly-float:10px;--jelly-turn:1.6deg;
 }
 [data-theme=night]{
   --paper:#232722;--panel:#2c322c;--ink:#f0eee3;--muted:#b9c0b4;
@@ -138,12 +138,12 @@ body{background-image:none}
 .joey-letter:nth-child(2) .jelly-art{animation-duration:7.2s}
 .joey-letter:nth-child(3) .jelly-art{animation-duration:6.1s}
 .joey-letter:nth-child(4) .jelly-art{animation-duration:7.6s}
-.joey-letter[data-chapter=work] .jelly-art,.chapter-dialog[data-chapter=work] .chapter-art{background-image:url('assets/jelly-j-uppercase.png');background-size:100% 100%;background-position:center}
+.joey-letter[data-chapter=about] .jelly-art,.chapter-dialog[data-chapter=about] .chapter-art{background-image:url('assets/jelly-j-uppercase.png');background-size:100% 100%;background-position:center}
 @keyframes jelly-idle{
   0%,100%{translate:calc(var(--jelly-drift)*-.7) calc(var(--jelly-float)*-.15);rotate:calc(var(--jelly-turn)*-.7);scale:1.01 .99}
-  25%{translate:var(--jelly-drift) calc(var(--jelly-float)*-1);rotate:var(--jelly-turn);scale:.985 1.025}
-  52%{translate:calc(var(--jelly-drift)*-.65) calc(var(--jelly-float)*.22);rotate:calc(var(--jelly-turn)*-.4);scale:1.02 .985}
-  78%{translate:calc(var(--jelly-drift)*.55) calc(var(--jelly-float)*-.65);rotate:calc(var(--jelly-turn)*.7);scale:.995 1.01}
+  25%{translate:var(--jelly-drift) calc(var(--jelly-float)*-1);rotate:var(--jelly-turn);scale:.998 1.008}
+  52%{translate:calc(var(--jelly-drift)*-.65) calc(var(--jelly-float)*.22);rotate:calc(var(--jelly-turn)*-.4);scale:1.008 .995}
+  78%{translate:calc(var(--jelly-drift)*.55) calc(var(--jelly-float)*-.65);rotate:calc(var(--jelly-turn)*.7);scale:.998 1.008}
 }
 .jelly-fallback{display:none}
 .jelly-unavailable .jelly-art{display:none}
@@ -180,7 +180,7 @@ body.chapter-open{overflow:hidden}
 .chapter-home>span{display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);border-radius:50%;width:36px;height:36px;font-size:22px;transition:transform .3s}
 .chapter-home:hover>span{transform:translateX(-3px)}
 .chapter-object{width:min(75%,360px);text-align:center;margin-top:-28px}
-.chapter-art{--jelly-drift:6px;--jelly-float:18px;--jelly-turn:3deg;width:100%;filter:drop-shadow(0 20px 12px #4841281a);transform-origin:center;animation:jelly-idle 7.2s ease-in-out infinite}
+.chapter-art{--jelly-drift:3px;--jelly-float:8px;--jelly-turn:1.2deg;width:100%;filter:drop-shadow(0 20px 12px #4841281a);transform-origin:center;animation:jelly-idle 7.2s ease-in-out infinite}
 .chapter-caption{display:block;margin-top:9px;font:italic 650 27px/1.2 var(--body);letter-spacing:-.7px;color:color-mix(in srgb,var(--ink) 65%,var(--chapter-wash));transform:rotate(-4deg)}
 .chapter-switcher{position:absolute;bottom:35px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:22px;color:var(--muted)}
 .chapter-switcher button{display:grid;place-items:center;width:44px;height:44px;border:1px solid color-mix(in srgb,var(--ink) 20%,transparent);border-radius:50%;background:transparent;font:23px var(--body);transition:background .2s,transform .3s}
@@ -262,7 +262,7 @@ body{font-weight:450}
 .file-tabs>button>strong,.email-link,.tool-row>strong{font-weight:650}
 #chapter-heading{font-weight:650;letter-spacing:-.055em}
 .small-label,.eyebrow,.hero-topline,.cover-top,.cover-bottom,.chapter-kicker{font-weight:600}
-@media(max-width:600px){:root{--jelly-drift:3px;--jelly-float:12px;--jelly-turn:3deg}.chapter-art{--jelly-drift:3px;--jelly-float:12px;--jelly-turn:3deg}.letter-label{gap:2px}}
+@media(max-width:600px){:root{--jelly-drift:2px;--jelly-float:7px;--jelly-turn:1.2deg}.chapter-art{--jelly-drift:2px;--jelly-float:7px;--jelly-turn:1.2deg}.letter-label{gap:2px}}
 @media(prefers-reduced-motion:reduce){.jelly-art{animation:none!important;translate:none!important;rotate:none!important;scale:none!important;will-change:auto}}
 
 .text-arrow{display:inline-block;width:1em;height:1em;flex-shrink:0;vertical-align:-.12em;overflow:visible}

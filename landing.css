@@ -42,3 +42,17 @@ html:not(.is-enhanced) .chapter-library>#contact{width:min(1200px,calc(100% - 40
 @media(prefers-reduced-motion:reduce){.jelly-art{filter:none!important}.joey-letter:hover .joey-glyph{transform:none!important}}
 @media print{body{display:block}.is-enhanced .chapter-library{display:block}.hero{min-height:0;padding:0}.hero-stage{padding:0}.chapter-library>.section{display:block}.site-footer{display:none}.chapter-library .reveal{opacity:1!important;transform:none!important}}
 @media(max-width:800px){.site-footer>.landing-introduction:first-child{grid-area:1/1/2/2}.site-footer>.landing-credit{grid-area:1/2/2/3}.site-footer>.landing-hint{display:none}}
+
+/* A padded texture mesh lets the entire silhouette stretch without clipping. */
+.jelly-art{position:relative}
+.jelly-canvas{display:block;position:absolute;left:-27.5%;top:-27.5%;width:155%;height:155%;pointer-events:none;filter:drop-shadow(0 12px 7px #34362513)}
+.joey-letter .jelly-art.is-mesh-ready{background-image:none}
+.joey-glyph.has-jelly-mesh{filter:none}
+.joey-letter .joey-glyph,.joey-letter:hover .joey-glyph{transform:translateY(var(--jelly-rise,0px)) skewX(var(--jelly-skew,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
+.joey-letter .joey-glyph.has-jelly-mesh,.joey-letter:hover .joey-glyph.has-jelly-mesh{transform:none}
+.joey-letter .joey-glyph{transition:none;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.joey-letter.is-pulling .joey-glyph{cursor:grabbing}
+@media(prefers-reduced-motion:reduce){.joey-letter .joey-glyph,.joey-letter:hover .joey-glyph{transform:none!important}}
+/* Mesh padding is a drawing buffer, not horizontal page content. */
+.joey-world{overflow:clip;overflow-clip-margin:20px}
+@media(prefers-reduced-motion:reduce){.joey-letter .joey-glyph{cursor:pointer}}

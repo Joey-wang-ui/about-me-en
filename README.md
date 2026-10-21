@@ -2,7 +2,7 @@
 
 A separate English version of Joey Wang's portfolio. The current direction uses generous typography, quiet paper surfaces, colorful sculptural keepsakes, and soft elastic interactions, inspired by the supplied style reference. The Chinese version remains at https://joey-wang-ui.github.io/about-me/.
 
-Live site: https://joey-wang-ui.github.io/about-me-en/.
+GitHub Pages URL (available after enabling Pages): https://joey-wang-ui.github.io/about-me-en/.
 
 ## Preview
 
@@ -28,4 +28,8 @@ The English text preserves the Chinese page's research metrics, limitations, int
 
 ## Publishing
 
-This repository is a static website: no build step or runtime secrets are needed. GitHub Pages publishes the `main` branch from `/(root)`. The `.nojekyll` file keeps all assets as plain static files.
+This repository is a static website: no build step or runtime secrets are needed.
+
+One-time setup: open [Settings → Pages](https://github.com/Joey-wang-ui/about-me-en/settings/pages), select **Deploy from a branch**, choose **main** and **/(root)**, then click **Save**. After GitHub finishes the first Pages build, the URL above becomes available.
+
+Subsequent pushes to `main` republish automatically. The `.nojekyll` file keeps all assets as plain static files.

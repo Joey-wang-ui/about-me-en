@@ -1,0 +1,85 @@
+/* A warm neutral world, with a small, coordinated set of emphasis colors. */
+:root{
+  --paper:#f6f2e9;--panel:#fffaf1;--ink:#353c47;--muted:#63636b;
+  --line:#ccc8be;--wash:#ebe8df;--shadow:#d5cec1;--sand:#f1e5d7;--wood:#b28a51;
+  --blue:#3f6390;--terra:#98503c;--plum:#76567d;--teal:#386f69;--gold:#896322;--sage:#567447;
+  --blue-soft:#e7edf4;--terra-soft:#f4e6dc;--plum-soft:#eee6f1;--teal-soft:#e4eeea;
+  --accent:var(--blue);--accent-soft:var(--blue-soft);
+  --title-blue:#3f6390;--title-teal:#547b75;--title-terra:#ad6b4c;--title-plum:#80668b;
+}
+[data-theme=night]{
+  --paper:#1e232d;--panel:#282f3b;--ink:#eee8dc;--muted:#b6bac3;
+  --line:#4b5361;--wash:#303744;--shadow:#141922;--sand:#3c332f;--wood:#cdaa72;
+  --blue:#a5c4ed;--terra:#e6ac94;--plum:#d0b8df;--teal:#98d0c3;--gold:#e1c481;--sage:#afc796;
+  --blue-soft:#2c3b50;--terra-soft:#433631;--plum-soft:#3c344a;--teal-soft:#2a403e;
+  --title-blue:#a5c4ed;--title-teal:#98c7bc;--title-terra:#e2a588;--title-plum:#c7b0d9;
+}
+body{background-image:linear-gradient(#69778a08 1px,transparent 1px),linear-gradient(90deg,#69778a08 1px,transparent 1px)}
+/* The name carries the playful color; everyday reading stays neutral. */
+.joey-letter:nth-child(1){--letter-color:var(--title-blue)}
+.joey-letter:nth-child(2){--letter-color:var(--title-teal)}
+.joey-letter:nth-child(3){--letter-color:var(--title-terra)}
+.joey-letter:nth-child(4){--letter-color:var(--title-plum)}
+.joey-letter:nth-child(5){--letter-color:var(--gold)}
+.joey-glyph{color:var(--letter-color)}
+.joey-letter:hover .joey-glyph,.wordmark-play:focus-visible .joey-glyph{color:var(--letter-color);filter:brightness(1.1)}
+.availability i{background:var(--sage);box-shadow:3px 3px 0 color-mix(in srgb,var(--sage) 15%,transparent)}
+.hero-name h2{color:var(--ink)}
+.profile-headline{color:var(--blue)}
+.profile-tags>span:nth-child(1){color:var(--blue);border-color:color-mix(in srgb,var(--blue) 40%,var(--line))}
+.profile-tags>span:nth-child(2){color:var(--terra);border-color:color-mix(in srgb,var(--terra) 40%,var(--line))}
+.profile-tags>span:nth-child(3){color:var(--plum);border-color:color-mix(in srgb,var(--plum) 40%,var(--line))}
+.hero-coordinate .pixel-sun{color:var(--gold)}
+.world-ribbon .icon{color:var(--sage)}
+/* Two research cards retain their own quiet blue and terracotta identities. */
+.cover-live{--accent:var(--blue);background:var(--blue-soft)}
+.cover-finance{--accent:var(--terra);background:var(--terra-soft)}
+.research-cover::before,.cover-finance::before{background:var(--accent)}
+.research-cover h3{color:var(--ink)}
+.research-cover>strong,.pixel-chart{color:var(--accent)}
+.cover-top{color:var(--accent)}
+.cover-bottom{border-color:color-mix(in srgb,var(--accent) 25%,var(--line))}
+#work{--accent:var(--blue);--accent-soft:var(--blue-soft)}
+#experience{--accent:var(--terra);--accent-soft:var(--terra-soft)}
+#about{--accent:var(--plum);--accent-soft:var(--plum-soft)}
+#contact{--accent:var(--teal);--accent-soft:var(--teal-soft)}
+.section-head h2,.section-head .eyebrow,.archive-cover>h2{color:var(--accent)}
+.section-head h2>span,.archive-cover>h2>span{color:var(--gold)}
+#tab-live,#panel-live{--accent:var(--blue);--accent-soft:var(--blue-soft)}
+#tab-finance,#panel-finance{--accent:var(--terra);--accent-soft:var(--terra-soft)}
+.file-tabs>button .icon,.file-tabs>button[aria-selected=true]>strong{color:var(--accent)}
+.file-tabs>button[aria-selected=true]{border-top-color:var(--accent)}
+.project-panel>h3{color:var(--ink)}
+.research-metrics{background:var(--accent-soft)}
+.research-metrics>div:nth-child(1)>strong{color:var(--accent)}
+.research-metrics>div:nth-child(2)>strong{color:var(--plum)}
+.research-metrics>div:nth-child(3)>strong{color:var(--terra)}
+#panel-finance .research-metrics>div:nth-child(3)>strong{color:var(--blue)}
+.research-note>span{color:var(--terra)}
+.experience-row:hover,.experience-row.is-current{background:var(--accent-soft)}
+.experience-row.is-current .experience-info h3{color:var(--terra)}
+.school h4{color:var(--ink)}
+.school>.small-label{color:var(--blue)}
+.school .upcoming{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 35%,var(--line));background:var(--teal-soft)}
+.tool-row>strong{color:var(--plum)}
+.honors-list strong{color:var(--terra)}
+.contact .archive-label,.email-link{color:var(--teal)}
+.contact .pixel-button.primary{background:var(--teal)}
+.copy-email{color:var(--plum);border-color:var(--plum)}
+/* Navigation repeats the same chapter colors, including the live waypoint. */
+.main-nav a[href="#work"],.hotbar a[data-section=work]{--accent:var(--blue)}
+.main-nav a[href="#experience"],.hotbar a[data-section=experience]{--accent:var(--terra)}
+.main-nav a[href="#about"],.hotbar a[data-section=about]{--accent:var(--plum)}
+.main-nav a[href="#contact"],.hotbar a[data-section=contact]{--accent:var(--teal)}
+.main-nav a:hover,.main-nav a[aria-current]{color:var(--accent)}
+.hotbar[data-zone=experience]{--accent:var(--terra)}
+.hotbar[data-zone=about]{--accent:var(--plum)}
+.hotbar[data-zone=contact]{--accent:var(--teal)}
+.hotbar>a[aria-current]{background:color-mix(in srgb,var(--accent) 8%,var(--panel))}
+.map-place.forest{--accent:var(--blue);background:var(--blue-soft)}
+.map-place.village{--accent:var(--terra);background:var(--terra-soft)}
+.map-place.library{--accent:var(--plum);background:var(--plum-soft)}
+.map-place.meadow{--accent:var(--teal);background:var(--teal-soft)}
+.map-place>.icon,.map-place>strong{color:var(--accent)}
+.map-place:hover{background:color-mix(in srgb,var(--accent) 16%,var(--panel))}
+@media print{body{background:white;color:#222}.joey-glyph,.section-head h2,.archive-cover>h2{color:#353c47}}

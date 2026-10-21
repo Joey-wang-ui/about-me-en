@@ -183,7 +183,7 @@
   const chapterContent = $('.chapter-content');
   const chapterReader = $('.chapter-reader');
   const chapters = [
-    { id: 'work', letter: 'j', title: 'Selected work', kicker: '01 / RESEARCH & IDEAS', intro: 'Real questions. Real data. Two ways of looking a little closer.' },
+    { id: 'work', letter: 'J', title: 'Selected work', kicker: '01 / RESEARCH & IDEAS', intro: 'Real questions. Real data. Two ways of looking a little closer.' },
     { id: 'experience', letter: 'o', title: 'Experience', kicker: '02 / LEARNING BY DOING', intro: 'Product, cloud platforms, and research. A few things I’ve learned along the way.' },
     { id: 'about', letter: 'e', title: 'A little about me', kicker: '03 / BACKGROUND & BEYOND', intro: 'What I’m learning, what I work with, and a little life away from the keyboard.' },
     { id: 'contact', letter: 'y', title: 'Let’s talk', kicker: '04 / SAY HELLO', intro: 'A good conversation is a pretty good place to start.' },
@@ -237,7 +237,7 @@
     $('.chapter-caption').textContent = chapter.title;
     $('.chapter-count').textContent = `${String(index + 1).padStart(2, '0')} / 04`;
     const next = chapters[(index + 1) % chapters.length];
-    $('.chapter-next-inline').innerHTML = `${next.title} <span aria-hidden="true">↗</span>`;
+    $('.chapter-next-inline').innerHTML = `${next.title} <span aria-hidden="true"><svg class="text-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     $('.chapter-next').setAttribute('aria-label', `Next chapter: ${next.title}`);
     $('.chapter-prev').setAttribute('aria-label', `Previous chapter: ${chapters[(index + 3) % 4].title}`);
     document.body.classList.add('chapter-open');

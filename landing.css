@@ -15,10 +15,10 @@ body{min-height:100svh;display:flex;flex-direction:column}
 .joey-letter:hover .joey-glyph{transform:translateY(var(--jelly-rise,-3px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
 /* A shallow arch with the outer letters leaning gently toward the center. */
 .joey-rest{--arch-step:clamp(3px,.8vw,12px)}
-.joey-letter{--arch-lift:calc(var(--arch-step)*.5);--arch-tilt:2.5deg}
+.joey-letter{--arch-lift:calc(var(--arch-step)*.5);--arch-tilt:-4deg}
 .joey-letter:nth-child(2){--arch-lift:calc(var(--arch-step)*-1);--arch-tilt:.8deg}
 .joey-letter:nth-child(3){--arch-lift:calc(var(--arch-step)*-1);--arch-tilt:-.8deg}
-.joey-letter:nth-child(4){--arch-tilt:-2.5deg}
+.joey-letter:nth-child(4){--arch-tilt:4deg}
 .joey-letter .joey-glyph,.joey-letter .letter-label,.joey-letter .letter-description{translate:0 var(--arch-lift);rotate:var(--arch-tilt)}
 @media(prefers-reduced-motion:reduce){.joey-letter .joey-glyph{translate:0 var(--arch-lift)!important;rotate:var(--arch-tilt)!important}}
 .joey-letter.is-touching .jelly-art{animation-play-state:paused}
@@ -136,3 +136,21 @@ html[lang=zh-CN] .chapter-introduction{line-height:1.65}
 .language-toggle.is-switching::after{animation:language-ripple .46s ease-out both}
 @keyframes language-ripple{from{opacity:.8;transform:scale(.8)}to{opacity:0;transform:scale(1.55)}}
 @media(prefers-reduced-motion:reduce){.chapter-glyph{transform:none!important;cursor:pointer}.chapter-art{animation:none!important;translate:none!important;rotate:none!important;scale:none!important;will-change:auto}}
+
+/* The viewport clips the soft light while leaving every underlying hit area intact. */
+.cursor-layer{position:fixed;inset:0;z-index:2147483647;overflow:clip;contain:strict;pointer-events:none!important;opacity:0;transition:opacity .14s ease}
+.cursor-layer.is-visible{opacity:1}
+.soft-cursor{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none!important;will-change:transform}
+.soft-cursor::before{content:"";position:absolute;left:-24px;top:-24px;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle,#fffdf6cc 0%,#ead7f0a8 16%,#c4a5dd6b 34%,#cfb6df28 52%,#decce80a 65%,transparent 74%);filter:blur(1.5px);transform:scale(1);opacity:.9;transition:transform .2s cubic-bezier(.2,.7,.25,1),opacity .2s ease}
+.soft-cursor.is-hovering::before{transform:scale(1.23);opacity:1}
+.soft-cursor.is-pressed::before{transform:scale(.82);opacity:1}
+[data-theme=night] .soft-cursor::before{background:radial-gradient(circle,#fff7eac9 0%,#dec4ee9c 16%,#c6a4e05e 34%,#b79bd72b 52%,#cbb8e00a 65%,transparent 74%)}
+@media(any-pointer:fine){html.has-glow-cursor,html.has-glow-cursor *,html.has-glow-cursor *::before,html.has-glow-cursor *::after,html.has-glow-cursor dialog::backdrop{cursor:none!important}}
+@media(prefers-reduced-motion:reduce){.cursor-layer,.soft-cursor::before{transition:none}.soft-cursor::before{transform:none!important}}
+@media print{.cursor-layer{display:none!important}}
+
+/* Keep company marks alongside their names without narrowing the role text. */
+.company-heading{display:flex;align-items:center;gap:14px;margin-bottom:12px;min-width:0}
+.company-logo{display:block;flex:0 0 72px;width:72px;height:64px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:12px;padding:6px}
+.company-heading h3{min-width:0;margin:0;overflow-wrap:anywhere}
+@media(max-width:700px){.company-heading{gap:12px}.company-logo{flex-basis:62px;width:62px;height:58px;padding:5px}}

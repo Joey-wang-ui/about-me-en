@@ -15,15 +15,15 @@
       vec2 p = a_position;
       v_uv = u_crop.xy + (p * .5 + .5) * u_crop.zw;
       float soft = u_press;
-      vec2 q = p * vec2(1.0 + soft * .13, 1.0 - soft * .105);
+      vec2 q = p * vec2(1.0 + soft * .06, 1.0 - soft * .055);
       // Broad bends change the whole silhouette, rather than making a dent.
-      q.x += sin(p.y * 2.15 + u_focus.y * .65) * soft * .105;
-      q.y += sin(p.x * 2.3 + u_focus.x * .7) * soft * .065;
+      q.x += sin(p.y * 2.15 + u_focus.y * .45) * soft * .045;
+      q.y += sin(p.x * 2.3 + u_focus.x * .45) * soft * .025;
       float top = (p.y + 1.0) * .5;
       float side = (p.x + 1.0) * .5;
-      q.x += u_force.x * (.32 + .68 * top) + u_force.y * p.y * p.x * .15;
-      q.y += u_force.y * (.35 + .65 * side) + u_force.x * p.x * p.y * .12;
-      float twist = (u_force.x - u_force.y * .5) * p.y * .20;
+      q.x += u_force.x * (.32 + .68 * top) + u_force.y * p.y * p.x * .08;
+      q.y += u_force.y * (.35 + .65 * side) + u_force.x * p.x * p.y * .06;
+      float twist = (u_force.x - u_force.y * .5) * p.y * .09;
       q = mat2(cos(twist), -sin(twist), sin(twist), cos(twist)) * q;
       vec2 wave = vec2(sin(p.y * 3.8 + u_phase), sin(p.x * 3.4 - u_phase * .8));
       q += wave * u_wobble * (.65 + .35 * (1.0 - p.x * p.x));
@@ -39,7 +39,7 @@
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const spring = () => ({ value: 0, velocity: 0, target: 0 });
   function step(s, dt) {
-    s.velocity += ((s.target - s.value) * 115 - s.velocity * 11) * dt;
+    s.velocity += ((s.target - s.value) * 100 - s.velocity * 18) * dt;
     s.value += s.velocity * dt;
     if (Math.abs(s.target - s.value) < .0001 && Math.abs(s.velocity) < .001) {
       s.value = s.target;
@@ -109,11 +109,11 @@
     function draw(now = performance.now()) {
       if (gl.isContextLost()) return;
       gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.uniform2f(uniforms.focus, state.focusX, state.focusY);
+      gl.uniform2f(uniforms.focus, state.aimX.value, state.aimY.value);
       gl.uniform2f(uniforms.force, state.x.value, state.y.value);
-      gl.uniform1f(uniforms.press, clamp(state.press.value, -.22, 1.45));
-      gl.uniform1f(uniforms.wobble, clamp(state.press.velocity * .012 + (state.x.velocity - state.y.velocity) * .008, -.12, .12));
-      gl.uniform1f(uniforms.phase, now / 1000 * 8);
+      gl.uniform1f(uniforms.press, clamp(state.press.value, -.05, 1.12));
+      gl.uniform1f(uniforms.wobble, clamp(state.press.velocity * .0025 + (state.x.velocity - state.y.velocity) * .002, -.012, .012));
+      gl.uniform1f(uniforms.phase, now / 1000 * 3.5);
       gl.drawArrays(gl.TRIANGLES, 0, geometry.length / 2);
     }
     function resize() {
@@ -157,10 +157,10 @@
           state.renderer.draw(now);
         } else {
           // The fallback still stretches and bends the entire letter.
-          state.glyph.style.setProperty('--touch-scale-x', (1 + state.press.value * .13).toFixed(4));
-          state.glyph.style.setProperty('--touch-scale-y', (1 - state.press.value * .105).toFixed(4));
-          state.glyph.style.setProperty('--jelly-skew', `${(state.x.value * 18).toFixed(2)}deg`);
-          state.glyph.style.setProperty('--jelly-rise', `${(-state.y.value * 18).toFixed(2)}px`);
+          state.glyph.style.setProperty('--touch-scale-x', (1 + state.press.value * .06).toFixed(4));
+          state.glyph.style.setProperty('--touch-scale-y', (1 - state.press.value * .055).toFixed(4));
+          state.glyph.style.setProperty('--jelly-skew', `${(state.x.value * 10).toFixed(2)}deg`);
+          state.glyph.style.setProperty('--jelly-rise', `${(-state.y.value * 12).toFixed(2)}px`);
         }
       }
       function tick(now) {
@@ -175,6 +175,8 @@
             active = step(state.press, dt / 2) || active;
             active = step(state.x, dt / 2) || active;
             active = step(state.y, dt / 2) || active;
+            active = step(state.aimX, dt / 2) || active;
+            active = step(state.aimY, dt / 2) || active;
           }
           if (active || state.dirty) paint(state, now);
           state.dirty = false;
@@ -188,7 +190,7 @@
         frame = 0;
         states.forEach(state => {
           state.hover = state.down = state.dragged = false;
-          [state.press, state.x, state.y].forEach(s => { s.value = s.velocity = s.target = 0; });
+          [state.press, state.x, state.y, state.aimX, state.aimY].forEach(s => { s.value = s.velocity = s.target = 0; });
           state.link.classList.remove('is-touching', 'is-pulling');
           ['--touch-scale-x', '--touch-scale-y', '--jelly-skew', '--jelly-rise'].forEach(name => state.glyph.style.removeProperty(name));
           if (state.pointerId != null && state.link.hasPointerCapture(state.pointerId)) state.link.releasePointerCapture(state.pointerId);
@@ -198,23 +200,26 @@
       }
       [...links].forEach((link, index) => {
         const art = link.querySelector('.jelly-art'), glyph = link.querySelector('.joey-glyph');
-        const state = { link, art, glyph, index, press: spring(), x: spring(), y: spring(), focusX: 0, focusY: 0, hover: false, down: false, dragged: false, suppressUntil: 0, dirty: false, renderer: null, pointerId: null };
+        const state = { link, art, glyph, index, press: spring(), x: spring(), y: spring(), aimX: spring(), aimY: spring(), focusX: 0, focusY: 0, hover: false, down: false, dragged: false, suppressUntil: 0, dirty: false, renderer: null, pointerId: null };
         states.push(state);
         link.draggable = false;
         function point(event) {
           const bounds = art.getBoundingClientRect();
           state.focusX = clamp((event.clientX - bounds.left) / bounds.width * 2 - 1, -1, 1);
           state.focusY = clamp(1 - (event.clientY - bounds.top) / bounds.height * 2, -1, 1);
-          state.press.target = state.down ? 1.22 : 1;
-          state.x.target = state.focusX * .20;
-          state.y.target = state.focusY * .17;
+          // Smooth the contact point too, so broad bends never jump with the pointer.
+          state.aimX.target = state.focusX;
+          state.aimY.target = state.focusY;
+          state.press.target = state.down ? 1.08 : 1;
+          state.x.target = state.focusX * .09;
+          state.y.target = state.focusY * .075;
           if (state.down) {
             const dx = event.clientX - state.startX, dy = event.clientY - state.startY;
             state.dragged ||= Math.hypot(dx, dy) > 7;
-            state.x.target += clamp(dx / bounds.width, -.45, .45);
-            state.y.target -= clamp(dy / bounds.height, -.4, .4);
-            state.x.target = clamp(state.x.target, -.55, .55);
-            state.y.target = clamp(state.y.target, -.5, .5);
+            state.x.target += clamp(dx / bounds.width * .5, -.22, .22);
+            state.y.target -= clamp(dy / bounds.height * .5, -.2, .2);
+            state.x.target = clamp(state.x.target, -.28, .28);
+            state.y.target = clamp(state.y.target, -.25, .25);
           }
           state.dirty = true;
           link.classList.add('is-touching');
@@ -255,8 +260,8 @@
           const bounds = glyph.getBoundingClientRect();
           state.hover = !cancelled && event.clientX >= bounds.left && event.clientX <= bounds.right && event.clientY >= bounds.top && event.clientY <= bounds.bottom;
           state.press.target = state.hover ? 1 : 0;
-          state.x.target = state.hover ? state.focusX * .20 : 0;
-          state.y.target = state.hover ? state.focusY * .17 : 0;
+          state.x.target = state.hover ? state.focusX * .09 : 0;
+          state.y.target = state.hover ? state.focusY * .075 : 0;
           const pointerId = state.pointerId;
           state.pointerId = null;
           if (pointerId != null && link.hasPointerCapture(pointerId)) link.releasePointerCapture(pointerId);

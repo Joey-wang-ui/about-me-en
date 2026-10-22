@@ -23,7 +23,7 @@ body{min-height:100svh;display:flex;flex-direction:column}
 @media(prefers-reduced-motion:reduce){.joey-letter .joey-glyph{translate:0 var(--arch-lift)!important;rotate:var(--arch-tilt)!important}}
 .joey-letter.is-touching .jelly-art{animation-play-state:paused}
 .is-enhanced .chapter-library{display:none}
-.site-footer{flex-shrink:0;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:55px;align-items:end;margin-top:0;padding:21px 0 27px;font-family:var(--body);font-size:12px}
+.site-footer{flex-shrink:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:55px;align-items:end;margin-top:0;padding:21px 0 27px;font-family:var(--body);font-size:12px}
 .site-footer .landing-introduction{display:block;max-width:460px}
 .landing-introduction>p{font:550 17px/1.6 var(--body);letter-spacing:-.15px;color:var(--ink)}
 .site-footer .landing-introduction>span{display:block;font:12px/1.6 var(--body);margin-top:5px;color:var(--muted)}
@@ -101,3 +101,21 @@ html:not(.is-enhanced) .chapter-library>#contact{width:min(1200px,calc(100% - 40
 .site-footer .landing-linkedin{align-self:flex-end;font:600 12px/1.5 var(--body);color:var(--plum);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .site-footer .landing-linkedin:hover{color:var(--ink)}
 @media(max-width:600px){.site-footer .landing-linkedin{font-size:11px}}
+
+.school-heading{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.school-heading>div{min-width:0}
+.school-logo{display:block;flex:none;width:56px;height:56px;object-fit:contain;padding:4px;background:#fff;border:1px solid var(--line);border-radius:10px}
+.school-heading .small-label{font:500 11px/1.5 var(--body);letter-spacing:1.3px;color:var(--accent);text-transform:uppercase}
+.school-heading h4{margin:5px 0 0}
+.school-activities{margin-top:10px}
+.language-link{border:0;background:none;padding:0;font-family:var(--body);cursor:pointer}
+.chapter-language{position:absolute;top:27px;right:82px;z-index:12;padding:3px 5px;border:0;background:var(--reader-paper);color:var(--muted);font:500 12px/1.6 var(--body);cursor:pointer}
+.language-toggle:hover{color:var(--plum)}
+html[lang=zh-CN]{--body:Nunito,"PingFang SC","Microsoft YaHei",sans-serif}
+html[lang=zh-CN] .chapter-content,html[lang=zh-CN] .chapter-introduction{--body:Agrandir,"PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:.015em}
+html[lang=zh-CN] .chapter-content :is(.file-summary,.research-row>p,.school>p:not(.small-label),.experience-body ul,.honors-list,.beyond-list,.honors-list>li>span,.tool-row>span){line-height:1.7;letter-spacing:.015em}
+html[lang=zh-CN] .chapter-introduction{line-height:1.65}
+@media(max-width:700px){.school-logo{width:46px;height:46px}.school-heading{gap:12px}.school-heading h4{font-size:22px}.chapter-language{position:fixed;top:17px;right:62px;border-radius:18px;background:var(--chapter-wash);padding:4px 9px}.chapter-content .experience-date{flex-wrap:wrap}}
+
+.employment-type{display:block;margin-top:6px;font:400 12px/1.5 var(--body);color:var(--muted)}
+@media(min-width:701px){.chapter-content .experience-row{grid-template-columns:140px minmax(0,1fr)}}

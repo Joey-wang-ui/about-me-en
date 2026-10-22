@@ -18,7 +18,7 @@ body{min-height:100svh;display:flex;flex-direction:column}
 .joey-letter:nth-child(2){--arch-lift:calc(var(--arch-step)*-1);--arch-tilt:.8deg}
 .joey-letter:nth-child(3){--arch-lift:calc(var(--arch-step)*-1);--arch-tilt:-.8deg}
 .joey-letter:nth-child(4){--arch-tilt:-2.5deg}
-.joey-letter .joey-glyph{translate:0 var(--arch-lift);rotate:var(--arch-tilt)}
+.joey-letter .joey-glyph,.joey-letter .letter-label,.joey-letter .letter-description{translate:0 var(--arch-lift);rotate:var(--arch-tilt)}
 @media(prefers-reduced-motion:reduce){.joey-letter .joey-glyph{translate:0 var(--arch-lift)!important;rotate:var(--arch-tilt)!important}}
 .joey-letter.is-touching .jelly-art{animation-play-state:paused}
 .is-enhanced .chapter-library{display:none}

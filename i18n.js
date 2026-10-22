@@ -60,7 +60,7 @@
     "2024–2025 and 2025–2026": "2024—2025、2025—2026 学年",
     "2023 Suzhou University Student Arts Exhibition": "2023 年苏州市大学生艺术展演",
     "Second prize, Chinese folk music category": "民族器乐类二等奖",
-    "Away from the keyboard": "键盘之外的生活",
+    "Away from the keyboard": "校园生活",
     "Member of the university football team.": "校足球队成员。",
     "Member of the university badminton club’s management team. The club received the 2023 Best Club award.": "校羽毛球社管理团队成员，社团获评 2023 年度最佳社团。",
     "Run a personal Douyin content account with nearly 2,000 followers.": "运营个人抖音内容账号，拥有近 2,000 名关注者。",
@@ -152,12 +152,13 @@
     "Next chapter": "下一页",
     "Close chapter": "关闭详情",
     "Chapter content": "详情内容",
+    "Play with the jelly letter": "轻触果冻字母",
     "JOEY WANG / A LITTLE MORE TO EXPLORE": "JOEY WANG / 继续了解一点",
     "01 / MY STORY SO FAR": "01 / 我的故事",
     "02 / SELECTED WORK": "02 / 精选项目",
     "03 / LEARNING BY DOING": "03 / 在实践中学习",
     "04 / YOUR NEXT COLLABORATOR": "04 / 期待与你合作",
-    "Where I’m learning, what I work with, and a little life away from the keyboard.": "在哪里学习、用什么工具工作，以及键盘之外的一点生活。",
+    "Where I’m learning, what I work with, and a little life away from the keyboard.": "我的学习经历、使用的工具，以及一些校园生活。",
     "Two research projects. From real questions and real data to a little more understanding.": "两个研究项目，从真实问题和数据出发，多理解一点。",
     "Product, cloud platforms, and research. A few things I’ve learned along the way.": "产品、云平台与研究，以及一路实践中的收获。",
     "A good conversation is a pretty good place to start.": "从一次愉快的交流开始。",
@@ -246,8 +247,55 @@
       }
     }
   }
+  const switchMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const effects = new Set();
+  const effectsByElement = new WeakMap();
+  function animateSwitchElement(element, frames, options, cleanup) {
+    effectsByElement.get(element)?.cancel();
+    const effect = element.animate(frames, options);
+    effectsByElement.set(element, effect);
+    effects.add(effect);
+    const finished = () => {
+      effects.delete(effect);
+      if (effectsByElement.get(element) === effect) {
+        effectsByElement.delete(element);
+        cleanup?.();
+      }
+    };
+    effect.finished.then(finished, finished);
+  }
+  function animateLanguageSwitch(button) {
+    if (switchMotion.matches || !button.animate) return;
+    button.classList.remove('is-switching');
+    void button.offsetWidth;
+    button.classList.add('is-switching');
+    animateSwitchElement(button, [
+      { transform: 'scale(1)' },
+      { transform: 'scale(.9,1.08)', offset: .2 },
+      { transform: 'scale(1.06,.96)', offset: .48 },
+      { transform: 'scale(.99,1.015)', offset: .76 },
+      { transform: 'scale(1)' },
+    ], { duration: 460, easing: 'cubic-bezier(.2,.7,.25,1)' }, () => button.classList.remove('is-switching'));
+    const inChapter = document.querySelector('.chapter-dialog').open;
+    const selector = inChapter ? '.chapter-reader-head,.chapter-content,.chapter-caption' : '.main-nav,.hero-topline,.letter-label,.letter-description,.landing-introduction';
+    document.querySelectorAll(selector).forEach(element => {
+      animateSwitchElement(element, [
+        { opacity: .45 },
+        { opacity: 1 },
+      ], { duration: 240, easing: 'ease-out' });
+    });
+  }
+  switchMotion.addEventListener('change', () => {
+    if (switchMotion.matches) {
+      effects.forEach(effect => effect.cancel());
+      document.querySelectorAll('.language-toggle').forEach(button => button.classList.remove('is-switching'));
+    }
+  });
   document.querySelectorAll('.language-toggle').forEach(button => {
-    button.addEventListener('click', () => setLanguage(language === 'en' ? 'zh' : 'en'));
+    button.addEventListener('click', () => {
+      setLanguage(language === 'en' ? 'zh' : 'en');
+      animateLanguageSwitch(button);
+    });
   });
   setLanguage(language, false);
   const observer = new MutationObserver(records => {

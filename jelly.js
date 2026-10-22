@@ -71,7 +71,8 @@
       if (!gl.getShaderParameter(result, gl.COMPILE_STATUS)) throw new Error('Jelly shader unavailable');
       return result;
     }
-    let program;
+    let program, texture;
+    let currentImage = image;
     try {
       program = gl.createProgram();
       gl.attachShader(program, shader(gl.VERTEX_SHADER, vertexSource));
@@ -86,7 +87,7 @@
       gl.enableVertexAttribArray(position);
       gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
       gl.activeTexture(gl.TEXTURE0);
-      const texture = gl.createTexture();
+      texture = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
@@ -127,15 +128,30 @@
     resize();
     state.art.classList.add('is-mesh-ready');
     state.glyph.classList.add('has-jelly-mesh');
-    canvas.addEventListener('webglcontextlost', event => {
-      event.preventDefault();
+    function fallback() {
       state.art.classList.remove('is-mesh-ready');
       state.glyph.classList.remove('has-jelly-mesh');
       state.renderer = null;
+      canvas.remove();
+    }
+    canvas.addEventListener('webglcontextlost', event => {
+      event.preventDefault();
+      fallback();
     });
+    function setArtwork(nextImage, crop) {
+      if (gl.isContextLost()) return;
+      gl.uniform4fv(gl.getUniformLocation(program, 'u_crop'), crop);
+      if (nextImage !== currentImage) {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, nextImage);
+        if (gl.getError() !== gl.NO_ERROR) { fallback(); return; }
+        currentImage = nextImage;
+      }
+      draw();
+    }
     if (typeof ResizeObserver === 'function') new ResizeObserver(resize).observe(state.art);
     else addEventListener('resize', resize);
-    return { draw };
+    return { draw, resize, setArtwork };
   }
   function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -145,9 +161,20 @@
       image.src = src;
     });
   }
+  let artwork;
+  const getArtwork = () => artwork ||= Promise.all([loadImage('assets/jelly-j-uppercase.png'), loadImage('assets/jelly-letters.png')]);
   window.JoeyJelly = {
-    mount(links, disabled) {
+    mount(links, disabled, { artSelector = '.jelly-art', glyphSelector = '.joey-glyph' } = {}) {
       const states = [];
+      let images;
+      function updateArtwork(state) {
+        if (!images) return;
+        const image = images[state.index === 0 ? 0 : 1];
+        const crop = state.index === 0 ? [0, 0, 1, 1] : [state.index / 4, 0, .25, 1];
+        if (state.renderer) state.renderer.setArtwork(image, crop);
+        else state.renderer = createRenderer(state, image, crop);
+        state.dirty = true;
+      }
       let frame = 0, previous = 0;
       function requestFrame() {
         if (!frame && !disabled()) { previous = performance.now(); frame = requestAnimationFrame(tick); }
@@ -200,7 +227,7 @@
         });
       }
       [...links].forEach((link, index) => {
-        const art = link.querySelector('.jelly-art'), glyph = link.querySelector('.joey-glyph');
+        const art = link.querySelector(artSelector), glyph = link.querySelector(glyphSelector);
         const state = { link, art, glyph, index, press: spring(), x: spring(), y: spring(), aimX: spring(), aimY: spring(), focusX: 0, focusY: 0, hover: false, down: false, dragged: false, suppressUntil: 0, dirty: false, renderer: null, pointerId: null };
         states.push(state);
         link.draggable = false;
@@ -287,15 +314,27 @@
           }
         }, true);
       });
-      Promise.all([loadImage('assets/jelly-j-uppercase.png'), loadImage('assets/jelly-letters.png')]).then(([capital, sheet]) => {
-        states.forEach(state => {
-          state.renderer = createRenderer(state, state.index === 0 ? capital : sheet, state.index === 0 ? [0, 0, 1, 1] : [state.index / 4, 0, .25, 1]);
-          state.dirty = true;
-          if (state.renderer) state.renderer.draw();
-        });
+      getArtwork().then(loaded => {
+        images = loaded;
+        states.forEach(updateArtwork);
         requestFrame();
       }).catch(() => { /* The original artwork and whole-letter CSS fallback remain usable. */ });
-      return { reset };
+      return {
+        reset,
+        setIndex(index) {
+          reset();
+          states.forEach(state => { state.index = clamp(index, 0, 3); updateArtwork(state); });
+        },
+        refresh() { states.forEach(state => state.renderer?.resize()); },
+        play() {
+          if (disabled()) return;
+          states.forEach(state => {
+            state.press.velocity = clamp(state.press.velocity + 12, -12, 12);
+            state.link.classList.add('is-touching');
+          });
+          requestFrame();
+        },
+      };
     },
   };
 })();

@@ -119,3 +119,20 @@ html[lang=zh-CN] .chapter-introduction{line-height:1.65}
 
 .employment-type{display:block;margin-top:6px;font:400 12px/1.5 var(--body);color:var(--muted)}
 @media(min-width:701px){.chapter-content .experience-row{grid-template-columns:140px minmax(0,1fr)}}
+
+/* The reader uses the same mesh, impulse springs, and idle motion as the homepage. */
+.chapter-glyph{display:block;width:100%;padding:0;border:0;background:none;line-height:0;cursor:grab;user-select:none;touch-action:pan-y;transform-origin:50% 66%;filter:drop-shadow(0 12px 7px #34362513);transform:translateY(var(--jelly-rise,0px)) skewX(var(--jelly-skew,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
+.chapter-glyph.has-jelly-mesh{transform:none;filter:none}
+.chapter-art{position:relative;--jelly-drift:inherit;--jelly-float:inherit;--jelly-turn:inherit;filter:none;transform-origin:50% 70%;animation:jelly-idle 6.6s ease-in-out infinite;animation-delay:calc(var(--letter)*-1.4s);will-change:translate,rotate,scale}
+.chapter-dialog .chapter-art.is-mesh-ready{background-image:none}
+.chapter-dialog[data-chapter=work] .chapter-art{animation-duration:7.2s}
+.chapter-dialog[data-chapter=experience] .chapter-art{animation-duration:6.1s}
+.chapter-dialog[data-chapter=contact] .chapter-art{animation-duration:7.6s}
+.chapter-object.is-touching .chapter-art{animation-play-state:paused}
+.chapter-object.is-pulling .chapter-glyph{cursor:grabbing}
+.chapter-stage{overflow:clip;overflow-clip-margin:20px}
+.language-link{position:relative;isolation:isolate}
+.language-toggle::after{content:"";position:absolute;inset:-6px -9px;border:1px solid color-mix(in srgb,var(--plum) 55%,transparent);border-radius:999px;background:color-mix(in srgb,var(--plum) 6%,transparent);opacity:0;pointer-events:none}
+.language-toggle.is-switching::after{animation:language-ripple .46s ease-out both}
+@keyframes language-ripple{from{opacity:.8;transform:scale(.8)}to{opacity:0;transform:scale(1.55)}}
+@media(prefers-reduced-motion:reduce){.chapter-glyph{transform:none!important;cursor:pointer}.chapter-art{animation:none!important;translate:none!important;rotate:none!important;scale:none!important;will-change:auto}}

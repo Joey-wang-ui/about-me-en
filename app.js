@@ -163,6 +163,7 @@
     chapterSection.before(chapterPlaceholder);
     chapterContent.append(chapterSection);
     chapterDialog.dataset.chapter = id;
+    chapterJellyInteraction?.setIndex(index);
     history.replaceState(null, '', `#${id}`);
     $$('.joey-letter, .main-nav a').forEach(link => {
       const selected = link.getAttribute('href') === `#${id}`;
@@ -182,12 +183,13 @@
     $('.chapter-prev').setAttribute('aria-label', `Previous chapter: ${chapters[(index + 3) % 4].title}`);
     document.body.classList.add('chapter-open');
     if (!chapterDialog.open) chapterDialog.showModal();
+    chapterJellyInteraction?.refresh();
+    chapterJellyInteraction?.play();
     chapterReader.scrollTop = 0;
     chapterDialog.scrollTop = 0;
     $('#chapter-heading').focus({ preventScroll: true });
     if (!motion.matches && chapterReader.animate) {
       trackAnimation(chapterReader.animate([{ opacity: .3, transform: 'translateY(12px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' }));
-      bounceLetter($('.chapter-art'));
     }
   }
   function closeChapter() {
@@ -203,6 +205,7 @@
   $('.chapter-prev').addEventListener('click', () => switchChapter(-1));
   function finishChapterClose() {
     if (chapterDialog.open || activeChapter < 0) return;
+    chapterJellyInteraction?.reset();
     restoreChapterContent();
     activeChapter = -1;
     document.body.classList.remove('chapter-open');
@@ -232,7 +235,9 @@
   }));
   // Shape the whole textured letter; chapter navigation keeps its stable links.
   const jellyInteraction = window.JoeyJelly?.mount($$('.joey-letter'), () => motion.matches || chapterDialog.open || !!root.dataset.intro);
-  function resetWordmarkPointer() { jellyInteraction?.reset(); }
+  const chapterJellyInteraction = window.JoeyJelly?.mount([$('.chapter-object')], () => motion.matches || !chapterDialog.open || !!root.dataset.intro, { artSelector: '.chapter-art', glyphSelector: '.chapter-glyph' });
+  $('.chapter-object').addEventListener('click', () => chapterJellyInteraction?.play());
+  function resetWordmarkPointer() { jellyInteraction?.reset(); chapterJellyInteraction?.reset(); }
   addEventListener('blur', resetWordmarkPointer);
   const jellyImage = new Image();
   jellyImage.onerror = () => root.classList.add('jelly-unavailable');

@@ -16,14 +16,14 @@ From the repository root, run `python3 -m http.server 8000 --bind 127.0.0.1`. Op
 - Chapters use a split reader on desktop and a native scrolling sheet on mobile. Previous/next controls, Escape, focus restoration, and retained research-tab/email state are supported.
 - Header links, Enter, Space, and shortcuts **1–4** open the same four chapters. URLs `#about`, `#work`, `#experience`, and `#contact` open a chapter directly.
 - The two research tabs support arrow keys, Home, and End; switching mid-read returns to the new project title.
-- Day/night theme, email copy, and optional entrance replay.
+- Day/night theme, email copy, and optional entrance replay. The jelly letters spread from a shared center into their shallow arch, followed by the chapter captions.
 - Reduced-motion support. Without JavaScript, all chapter content remains readable below the landing page and letter links scroll to it.
 
 ## Content and assets
 
 The English text preserves the Chinese page's research metrics, limitations, internships, and education dates. The USC period is explicitly future study beginning January 2027. Company names use English translations; the third internship title is kept as “Intern”. The original TOEFL value is preserved as written.
 
-`assets/sprites.svg` contains original rounded line icons. `assets/jelly-letters.png`, `assets/jelly-j-uppercase.png`, and `assets/jelly-charms.png` are newly generated transparent artwork; no scripts, images, or proprietary font files from the reference site are bundled. `playful.css` defines the materials and typography; `landing.css` defines the compact homepage and pointer-contact states; `jelly.js` handles the whole-letter texture mesh and elastic pointer/drag behavior. Nunito, used throughout the page and chapter readers, is self-hosted along with the earlier Pixelify Sans and Instrument Sans assets; their SIL Open Font License texts are in `assets/fonts/`.
+`assets/sprites.svg` contains original rounded line icons. `assets/jelly-letters.png`, `assets/jelly-j-uppercase.png`, and `assets/jelly-charms.png` are newly generated transparent artwork; no scripts, images, or proprietary font files from the reference site are bundled. `playful.css` defines the materials and typography; `landing.css` defines the compact homepage and pointer-contact states; `jelly.js` handles the whole-letter texture mesh and elastic pointer/drag behavior. Nunito is used for the landing page and playful headings; Instrument Sans gives chapter copy a clean, regular-weight reading style. These fonts and the earlier Pixelify Sans assets are self-hosted; their SIL Open Font License texts are in `assets/fonts/`.
 
 ## Publishing
 

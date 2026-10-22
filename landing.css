@@ -10,7 +10,7 @@ body{min-height:100svh;display:flex;flex-direction:column}
 .letter-label>span{font-size:13px}
 .letter-description{display:block;text-align:center;margin-top:5px;font:12px/1.5 var(--body);letter-spacing:.1px;color:var(--muted)}
 .joey-letter{padding-bottom:8px}
-.joey-glyph{width:88%;margin-inline:auto;transform:translateY(var(--jelly-rise,0px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
+.joey-glyph{width:70.4%;margin-inline:auto;transform:translateY(var(--jelly-rise,0px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
 .joey-letter:hover .joey-glyph{transform:translateY(var(--jelly-rise,-3px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
 /* A shallow arch with the outer letters leaning gently toward the center. */
 .joey-rest{--arch-step:clamp(3px,.8vw,12px)}
@@ -77,8 +77,22 @@ html:not(.is-enhanced) .chapter-library>#contact{width:min(1200px,calc(100% - 40
 .intro-fill{width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#b988cb,#cb99c3 38%,#dbbb83 70%,#80b6bd);transform:scaleX(var(--intro-progress,0));transform-origin:left;will-change:transform}
 .intro-number{font:550 11px/1.5 var(--body);font-variant-numeric:tabular-nums;letter-spacing:.5px;color:var(--muted)}
 .hero-enter .wordmark-row h1{animation:none}
-.hero-enter .joey-letter{animation:jelly-letter-arrive .78s cubic-bezier(.2,.75,.25,1) both;animation-delay:calc(var(--letter)*65ms)}
+.hero-enter .joey-letter{animation:jelly-letter-arrive 1.1s .28s cubic-bezier(.2,.7,.25,1) both}
+.hero-enter .letter-label,.hero-enter .letter-description{animation:letter-caption-arrive .5s .75s ease both}
 @keyframes soft-hello-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes intro-charm-float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-5px) rotate(3deg)}}
-@keyframes jelly-letter-arrive{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes jelly-letter-arrive{0%{opacity:0;transform:translate(var(--arrive-x,0px),var(--arrive-y,0px))}18%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes letter-caption-arrive{from{opacity:0}to{opacity:1}}
 @media(max-width:600px){.intro-charm{width:66px;height:66px;margin-bottom:22px}}
+
+/* Clear, regular-weight reading type inspired by the supplied chapter reference. */
+.chapter-dialog{--reader-ink:#30302d;--reader-muted:#686862}
+[data-theme=night] .chapter-dialog{--reader-ink:#eeeee8;--reader-muted:#bfc3ba}
+.chapter-content,.chapter-introduction{--body:Instrument,Arial,sans-serif;--pixel:var(--body);--reader-size:clamp(18px,1.4vw,22px);font-family:var(--body);font-weight:400;letter-spacing:-.025em;color:var(--reader-ink)}
+.chapter-introduction{max-width:60ch;font-size:var(--reader-size);line-height:1.45;color:var(--reader-muted)}
+.chapter-content :is(.file-summary,.research-row>p,.school>p:not(.small-label),.experience-body ul,.honors-list,.beyond-list,.honors-list>li>span,.tool-row>span){font-family:var(--body);font-size:var(--reader-size);font-weight:400;line-height:1.5;letter-spacing:-.025em;color:var(--reader-ink)}
+.chapter-content .file-summary{margin-block:20px 28px}
+.chapter-content .research-row{padding-block:22px}
+.chapter-content :is(.experience-body,.honors-list,.beyond-list) li+li{margin-top:.85em}
+.chapter-content>#contact>p{font:400 var(--reader-size)/1.5 var(--body);letter-spacing:-.025em;color:var(--reader-ink)}
+@media(max-width:700px){.chapter-content,.chapter-introduction{--reader-size:18px}.chapter-content .experience-date>.row-number{position:static}}

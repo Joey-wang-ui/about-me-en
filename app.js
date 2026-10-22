@@ -244,8 +244,23 @@
   const introBackground = $$('.site-header, main, .site-footer');
   let introFrame, introTimer, introFallback, introActive = false, replaying = false;
   function revealHero() {
-    $('.hero').classList.remove('hero-enter');
-    requestAnimationFrame(() => $('.hero').classList.add('hero-enter'));
+    const hero = $('.hero');
+    hero.classList.remove('hero-enter');
+    if (motion.matches) return;
+    // Measure the resting artwork so every letter starts at one shared center,
+    // including on small screens and with the shallow arch already applied.
+    const letters = $$('.joey-letter');
+    const centers = letters.map(letter => {
+      const box = letter.querySelector('.joey-glyph').getBoundingClientRect();
+      return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+    });
+    const centerX = centers.reduce((sum, point) => sum + point.x, 0) / centers.length;
+    const centerY = centers.reduce((sum, point) => sum + point.y, 0) / centers.length;
+    letters.forEach((letter, index) => {
+      letter.style.setProperty('--arrive-x', `${(centerX - centers[index].x).toFixed(2)}px`);
+      letter.style.setProperty('--arrive-y', `${(centerY - centers[index].y).toFixed(2)}px`);
+    });
+    requestAnimationFrame(() => hero.classList.add('hero-enter'));
   }
   function releaseIntro() {
     cancelAnimationFrame(introFrame);

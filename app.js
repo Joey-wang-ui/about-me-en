@@ -247,7 +247,7 @@
   const introTrack = $('.intro-track');
   const introNumber = $('.intro-number');
   const introBackground = $$('.site-header, main, .site-footer');
-  let introFrame, introTimer, introFallback, introActive = false, replaying = false;
+  let introFrame, introTimer, introFallback, introActive = false;
   function revealHero() {
     const hero = $('.hero');
     hero.classList.remove('hero-enter');
@@ -275,12 +275,6 @@
     intro.hidden = true;
     delete root.dataset.intro;
     introBackground.forEach(element => { element.inert = false; });
-    if (replaying) {
-      const heading = $('#hero-title');
-      heading.tabIndex = -1;
-      heading.focus({ preventScroll: true });
-      replaying = false;
-    }
   }
   function finishIntro(immediate = false) {
     if (!introActive) return;
@@ -294,11 +288,9 @@
     intro.classList.add('leaving');
     introTimer = setTimeout(releaseIntro, 520);
   }
-  function startIntro(replay = false) {
+  function startIntro() {
     if (introActive) return;
-    if (motion.matches || location.hash && !replay) { revealHero(); return; }
-    replaying = replay;
-    if (replay) scrollTo({ top: 0, behavior: 'instant' });
+    if (motion.matches || location.hash) { revealHero(); return; }
     intro.hidden = false;
     intro.classList.remove('leaving');
     root.dataset.intro = 'loading';
@@ -321,7 +313,6 @@
     }
     introFrame = requestAnimationFrame(tick);
   }
-  $('.replay-intro').addEventListener('click', () => startIntro(true));
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && introActive) finishIntro(true); });
   motion.addEventListener('change', () => {
     if (motion.matches) {

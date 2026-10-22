@@ -18,7 +18,7 @@ From the repository root, run `python3 -m http.server 8000 --bind 127.0.0.1`. Op
 - Header links, Enter, Space, and shortcuts **1–4** open the same four chapters. URLs `#about`, `#work`, `#experience`, and `#contact` open a chapter directly.
 - The two research tabs support arrow keys, Home, and End; switching mid-read returns to the new project title.
 - In-page English/Chinese switching covers the homepage, all chapter copy, accessible labels, and dynamic feedback. The selection is remembered locally; `?lang=zh` and `?lang=en` also select a language. Each chapter has its own language button, and switching retains open chapters and research tabs. The Chinese switch stays on this website and gives a soft elastic response, a satin highlight sweep, a rising label, and a gently staggered content reveal when clicked. Reduced-motion settings skip these effects.
-- Day/night theme, email copy, LinkedIn links in the footer and contact chapter, and optional entrance replay. The jelly letters spread from a shared center into their shallow arch, followed by the chapter captions.
+- Day/night theme, email copy, LinkedIn links in the footer and contact chapter. The jelly letters spread from a shared center into their shallow arch, followed by the chapter captions.
 - The mouse keeps a familiar arrow silhouette at 19.2 × 24 px (20% smaller), rendered as translucent lilac jelly with small highlights. It uses the browser cursor and its actual click hotspot on both the homepage and chapter reader, without a glow or trailing overlay. Touch input uses no custom cursor.
 - Reduced-motion support. Without JavaScript, all chapter content remains readable below the landing page and letter links scroll to it.
 

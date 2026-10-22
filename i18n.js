@@ -139,7 +139,6 @@
     "Select and copy the email address above.": "请选择并复制上方的邮箱地址。",
     "Hi, I’m Joey. Curious about AI, data, and what comes next.": "嗨，我是 Joey。对 AI、数据和接下来的可能保持好奇。",
     "Four letters. A little more about me.": "四个字母，带你多了解我一点。",
-    "Replay hello": "重播入场",
     "Close chapter and return to home": "关闭详情并返回首页",
     "Back to Joey": "返回首页",
     "Previous chapter": "上一页",

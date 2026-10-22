@@ -1,0 +1,7 @@
+Agrandir Regular
+Designer: Alexander Slobzheninov
+Copyright © 2018 by Alexander Slobzheninov. All rights reserved.
+Foundry: Pangram Pangram
+Official family page: https://pangrampangram.com/products/agrandir
+Font file source: https://github.com/Balcman/Agrandir/blob/main/Agrandir-Regular.woff2
+The source font's copyright and metadata have been preserved.

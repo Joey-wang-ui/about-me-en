@@ -64,3 +64,22 @@ html:not(.is-enhanced) .chapter-library>#contact{width:min(1200px,calc(100% - 40
 /* Mesh padding is a drawing buffer, not horizontal page content. */
 .joey-world{overflow:clip;overflow-clip-margin:20px}
 @media(prefers-reduced-motion:reduce){.joey-letter .joey-glyph{cursor:pointer}}
+
+/* A quiet, continuous hello that matches the translucent jelly artwork. */
+.world-intro{background:var(--paper);opacity:1;transform:none;transition:opacity .52s ease;isolation:isolate}
+.world-intro::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 42% 43%,#b58bcc12,transparent 38%),radial-gradient(ellipse at 59% 55%,#eac67010,transparent 35%)}
+.world-intro.leaving{opacity:0;transform:none;pointer-events:none}
+.intro-content{width:min(370px,calc(100% - 64px));text-align:center;animation:soft-hello-in .45s cubic-bezier(.2,.75,.25,1) backwards;transition:opacity .36s ease,transform .52s cubic-bezier(.2,.75,.25,1)}
+.world-intro.leaving .intro-content{opacity:0;transform:translateY(-8px)}
+.intro-charm{width:78px;height:78px;margin:0 auto 25px;animation:intro-charm-float 2.8s ease-in-out infinite;transform-origin:50% 65%}
+.intro-content>p{font:600 clamp(28px,5vw,36px)/1.22 var(--body);letter-spacing:-1px;color:var(--ink)}
+.intro-track{width:min(240px,100%);height:5px;margin:29px auto 11px;padding:0;border:0;border-radius:999px;background:color-mix(in srgb,var(--muted) 13%,transparent);box-shadow:none;overflow:hidden}
+.intro-fill{width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#b988cb,#cb99c3 38%,#dbbb83 70%,#80b6bd);transform:scaleX(var(--intro-progress,0));transform-origin:left;will-change:transform}
+.intro-number{font:550 11px/1.5 var(--body);font-variant-numeric:tabular-nums;letter-spacing:.5px;color:var(--muted)}
+.intro-content>small{margin-top:27px;font:450 12px/1.6 var(--body);letter-spacing:.1px;color:var(--muted)}
+.hero-enter .wordmark-row h1{animation:none}
+.hero-enter .joey-letter{animation:jelly-letter-arrive .78s cubic-bezier(.2,.75,.25,1) both;animation-delay:calc(var(--letter)*65ms)}
+@keyframes soft-hello-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes intro-charm-float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+@keyframes jelly-letter-arrive{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(max-width:600px){.intro-charm{width:66px;height:66px;margin-bottom:22px}.intro-content>small{font-size:11px}}

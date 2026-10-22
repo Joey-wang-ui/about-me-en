@@ -240,7 +240,6 @@
 
   const intro = $('.world-intro');
   const introTrack = $('.intro-track');
-  const introFill = $('.intro-fill');
   const introNumber = $('.intro-number');
   const introBackground = $$('.site-header, main, .site-footer');
   let introFrame, introTimer, introFallback, introActive = false, replaying = false;
@@ -267,13 +266,13 @@
     if (!introActive) return;
     cancelAnimationFrame(introFrame);
     introTrack.setAttribute('aria-valuenow', '100');
-    introFill.style.width = '100%';
+    intro.style.setProperty('--intro-progress', '1');
     introNumber.textContent = '100%';
     revealHero();
     if (immediate) { releaseIntro(); return; }
     root.dataset.intro = 'leaving';
     intro.classList.add('leaving');
-    introTimer = setTimeout(releaseIntro, 550);
+    introTimer = setTimeout(releaseIntro, 520);
   }
   function startIntro(replay = false) {
     if (introActive) return;
@@ -285,15 +284,16 @@
     root.dataset.intro = 'loading';
     introActive = true;
     introBackground.forEach(element => { element.inert = true; });
-    introFill.style.width = '0%';
+    intro.style.setProperty('--intro-progress', '0');
     introTrack.setAttribute('aria-valuenow', '0');
     introNumber.textContent = '00%';
     introFallback = setTimeout(() => finishIntro(true), 3500);
     const began = performance.now();
     function tick(now) {
       const fraction = Math.min(1, (now - began) / 1050);
-      const value = Math.floor((1 - Math.pow(1 - fraction, 1.4)) * 100);
-      introFill.style.width = `${value}%`;
+      const progress = 1 - Math.pow(1 - fraction, 1.4);
+      const value = Math.floor(progress * 100);
+      intro.style.setProperty('--intro-progress', String(progress));
       introTrack.setAttribute('aria-valuenow', String(value));
       introNumber.textContent = `${String(value).padStart(2, '0')}%`;
       if (fraction === 1) finishIntro();

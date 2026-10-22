@@ -38,8 +38,8 @@
   `;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const spring = () => ({ value: 0, velocity: 0, target: 0 });
-  function step(s, dt) {
-    s.velocity += ((s.target - s.value) * 100 - s.velocity * 18) * dt;
+  function step(s, dt, stiffness = 100, damping = 18) {
+    s.velocity += ((s.target - s.value) * stiffness - s.velocity * damping) * dt;
     s.value += s.velocity * dt;
     if (Math.abs(s.target - s.value) < .0001 && Math.abs(s.velocity) < .001) {
       s.value = s.target;
@@ -111,7 +111,7 @@
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform2f(uniforms.focus, state.aimX.value, state.aimY.value);
       gl.uniform2f(uniforms.force, state.x.value, state.y.value);
-      gl.uniform1f(uniforms.press, clamp(state.press.value, -.05, 1.12));
+      gl.uniform1f(uniforms.press, clamp(state.press.value, -.45, .95));
       gl.uniform1f(uniforms.wobble, clamp(state.press.velocity * .0025 + (state.x.velocity - state.y.velocity) * .002, -.012, .012));
       gl.uniform1f(uniforms.phase, now / 1000 * 3.5);
       gl.drawArrays(gl.TRIANGLES, 0, geometry.length / 2);
@@ -172,7 +172,8 @@
         states.forEach(state => {
           let active = false;
           for (let i = 0; i < 2; i++) {
-            active = step(state.press, dt / 2) || active;
+            // A single touch rings down through a few smaller rebounds.
+            active = step(state.press, dt / 2, 180, 7) || active;
             active = step(state.x, dt / 2) || active;
             active = step(state.y, dt / 2) || active;
             active = step(state.aimX, dt / 2) || active;
@@ -180,7 +181,7 @@
           }
           if (active || state.dirty) paint(state, now);
           state.dirty = false;
-          if (!active && !state.hover && !state.down) state.link.classList.remove('is-touching');
+          if (!active && !state.down) state.link.classList.remove('is-touching');
           moving = active || moving;
         });
         if (moving) frame = requestAnimationFrame(tick);
@@ -210,14 +211,11 @@
           // Smooth the contact point too, so broad bends never jump with the pointer.
           state.aimX.target = state.focusX;
           state.aimY.target = state.focusY;
-          state.press.target = state.down ? 1.08 : 1;
-          state.x.target = state.focusX * .09;
-          state.y.target = state.focusY * .075;
           if (state.down) {
             const dx = event.clientX - state.startX, dy = event.clientY - state.startY;
             state.dragged ||= Math.hypot(dx, dy) > 7;
-            state.x.target += clamp(dx / bounds.width * .5, -.22, .22);
-            state.y.target -= clamp(dy / bounds.height * .5, -.2, .2);
+            state.x.target = clamp(dx / bounds.width * .5, -.22, .22);
+            state.y.target = -clamp(dy / bounds.height * .5, -.2, .2);
             state.x.target = clamp(state.x.target, -.28, .28);
             state.y.target = clamp(state.y.target, -.25, .25);
           }
@@ -229,15 +227,28 @@
           if (disabled() || event.pointerType === 'touch') return;
           state.hover = true;
           point(event);
+          // Give the letter one nudge; hovering never holds it compressed.
+          // Cap repeated entries so quick crossings cannot build up motion.
+          state.press.velocity = clamp(state.press.velocity + 12, -12, 12);
+          state.x.velocity = clamp(state.x.velocity + state.focusX * .8, -1, 1);
+          state.y.velocity = clamp(state.y.velocity + state.focusY * .65, -1, 1);
         });
         glyph.addEventListener('pointermove', event => {
-          if (!state.down && state.hover && !disabled() && event.pointerType !== 'touch') point(event);
+          if (state.down || !state.hover || disabled() || event.pointerType === 'touch') return;
+          const previousX = state.focusX, previousY = state.focusY;
+          point(event);
+          const dx = state.focusX - previousX, dy = state.focusY - previousY;
+          const distance = Math.hypot(dx, dy);
+          if (distance < .002) return;
+          // Movement adds a small impulse, never a held deformation target.
+          state.press.velocity = clamp(state.press.velocity + Math.min(distance * 6, 2.5), -12, 12);
+          state.x.velocity = clamp(state.x.velocity + dx * 1.2, -1.2, 1.2);
+          state.y.velocity = clamp(state.y.velocity + dy * 1.2, -1.2, 1.2);
         });
         glyph.addEventListener('pointerleave', () => {
           state.hover = false;
           if (state.down) return;
-          state.press.target = state.x.target = state.y.target = 0;
-          requestFrame();
+          // Let the touch finish naturally even after the pointer leaves.
         });
         glyph.addEventListener('pointerdown', event => {
           if (disabled() || event.pointerType === 'touch' || event.button !== 0) return;
@@ -259,9 +270,7 @@
           link.classList.remove('is-pulling');
           const bounds = glyph.getBoundingClientRect();
           state.hover = !cancelled && event.clientX >= bounds.left && event.clientX <= bounds.right && event.clientY >= bounds.top && event.clientY <= bounds.bottom;
-          state.press.target = state.hover ? 1 : 0;
-          state.x.target = state.hover ? state.focusX * .09 : 0;
-          state.y.target = state.hover ? state.focusY * .075 : 0;
+          state.press.target = state.x.target = state.y.target = 0;
           const pointerId = state.pointerId;
           state.pointerId = null;
           if (pointerId != null && link.hasPointerCapture(pointerId)) link.releasePointerCapture(pointerId);

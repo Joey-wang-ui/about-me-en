@@ -13,6 +13,7 @@
   document.body.append(layer);
 
   let x = 0, y = 0, drawX = 0, drawY = 0, frame = 0, lastPaint = 0;
+  let velocityX = 0, velocityY = 0;
   let hasPosition = false, inside = false, visible = false;
   function updateHover(target) {
     const interactive = target instanceof Element && target.closest('a,button,[role="button"],input,select,textarea');
@@ -24,20 +25,26 @@
   function paint(now) {
     frame = 0;
     if (!visible) return;
-    const dt = Math.min(64, Math.max(1, now - lastPaint));
+    const dt = Math.min(64, Math.max(1, now - lastPaint)) / 1000;
     lastPaint = now;
-    // Ease toward the real pointer at the same speed on different refresh rates.
-    const follow = reducedMotion.matches ? 1 : 1 - Math.exp(-dt / 80);
-    drawX += (x - drawX) * follow;
-    drawY += (y - drawY) * follow;
-    // Keep fast sweeps close enough to the actual click position.
-    const distance = Math.hypot(x - drawX, y - drawY);
-    if (distance > 96) {
-      drawX = x - (x - drawX) * 96 / distance;
-      drawY = y - (y - drawY) * 96 / distance;
+    if (reducedMotion.matches) {
+      drawX = x; drawY = y;
+      velocityX = velocityY = 0;
+    } else {
+      // A critically damped spring carries velocity through starts and turns.
+      // Its exact step stays smooth across refresh rates, without distance snaps.
+      const frequency = 34;
+      const decay = Math.exp(-frequency * dt);
+      const offsetX = drawX - x, offsetY = drawY - y;
+      const carryX = velocityX + frequency * offsetX;
+      const carryY = velocityY + frequency * offsetY;
+      drawX = x + (offsetX + carryX * dt) * decay;
+      drawY = y + (offsetY + carryY * dt) * decay;
+      velocityX = (velocityX - frequency * carryX * dt) * decay;
+      velocityY = (velocityY - frequency * carryY * dt) * decay;
     }
-    const settled = Math.hypot(x - drawX, y - drawY) < .1;
-    if (settled) { drawX = x; drawY = y; }
+    const settled = Math.hypot(x - drawX, y - drawY) < .1 && Math.hypot(velocityX, velocityY) < 2;
+    if (settled) { drawX = x; drawY = y; velocityX = velocityY = 0; }
     render();
     if (!settled) frame = requestAnimationFrame(paint);
   }
@@ -57,7 +64,7 @@
   }
   function show() {
     if (!finePointer.matches || !hasPosition || document.hidden) return;
-    if (!visible) { drawX = x; drawY = y; render(); }
+    if (!visible) { drawX = x; drawY = y; velocityX = velocityY = 0; render(); }
     visible = true;
     root.classList.add('has-glow-cursor');
     layer.classList.add('is-visible');

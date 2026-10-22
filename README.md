@@ -11,7 +11,7 @@ From the repository root, run `python3 -m http.server 8000 --bind 127.0.0.1`. Op
 ## Interactions
 
 - A compact landing page keeps the focus on four jelly letters and a short introduction. Detailed content appears in its chapter reader rather than repeating below the homepage.
-- **J → Journey:** education, toolkit, milestones, and interests. **o → Outcomes:** two research projects. **e → Experience:** internships. **y → You & me:** contact and email.
+- **J → Journey:** education, toolkit, milestones, and interests. **o → Outcomes:** two research projects. **e → Experience:** internships. **y → You & me:** contact, with LinkedIn shown first and email as a smaller secondary option.
 - Letters drift gently at rest. Hovering stretches, squashes, and bends each whole letter, including its texture and highlights, using a spring-driven WebGL mesh. Hold and pull for a larger deformation; release to spring back. A drag does not open a chapter, while a normal click does. The clickable link areas remain stable. A whole-letter CSS fallback keeps interaction usable when WebGL is unavailable.
 - Chapter artwork shares the homepage mesh and damped touch/move/drag interactions. Its single canvas changes textures when switching chapters; clicking, tapping, or pressing Enter/Space also gives the displayed letter a soft nudge.
 - Chapters use a split reader on desktop and a native scrolling sheet on mobile. Previous/next controls, Escape, focus restoration, and retained research-tab/email state are supported.

@@ -108,14 +108,16 @@ html:not(.is-enhanced) .chapter-library>#contact{width:min(1200px,calc(100% - 40
 .school-heading .small-label{font:500 11px/1.5 var(--body);letter-spacing:1.3px;color:var(--accent);text-transform:uppercase}
 .school-heading h4{margin:5px 0 0}
 .school-activities{margin-top:10px}
-.language-link{border:0;background:none;padding:0;font-family:var(--body);cursor:pointer}
-.chapter-language{position:absolute;top:27px;right:82px;z-index:12;padding:3px 5px;border:0;background:var(--reader-paper);color:var(--muted);font:500 12px/1.6 var(--body);cursor:pointer}
-.language-toggle:hover{color:var(--plum)}
+.language-link{background:none;font-family:var(--body);cursor:pointer}
+.chapter-language{position:absolute;top:27px;right:82px;z-index:12;background:var(--reader-paper);color:var(--muted);font:500 12px/1.6 var(--body);cursor:pointer}
+.language-toggle{min-height:34px;padding:5px 13px;border:1px solid color-mix(in srgb,var(--muted) 38%,transparent);border-radius:999px;white-space:nowrap;transition:color .16s ease,border-color .16s ease,background-color .16s ease}
+.language-toggle:hover{color:var(--plum);border-color:var(--plum);background-color:color-mix(in srgb,var(--plum) 5%,transparent)}
 html[lang=zh-CN]{--body:Nunito,"PingFang SC","Microsoft YaHei",sans-serif}
 html[lang=zh-CN] .chapter-content,html[lang=zh-CN] .chapter-introduction{--body:Agrandir,"PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:.015em}
 html[lang=zh-CN] .chapter-content :is(.file-summary,.research-row>p,.school>p:not(.small-label),.experience-body ul,.honors-list,.beyond-list,.honors-list>li>span,.tool-row>span){line-height:1.7;letter-spacing:.015em}
 html[lang=zh-CN] .chapter-introduction{line-height:1.65}
 @media(max-width:700px){.school-logo{width:46px;height:46px}.school-heading{gap:12px}.school-heading h4{font-size:22px}.chapter-language{position:fixed;top:17px;right:62px;border-radius:18px;background:var(--chapter-wash);padding:4px 9px}.chapter-content .experience-date{flex-wrap:wrap}}
+@media(max-width:700px){.language-toggle{min-height:32px;padding:4px 9px}}
 
 .employment-type{display:block;margin-top:6px;font:400 12px/1.5 var(--body);color:var(--muted)}
 @media(min-width:701px){.chapter-content .experience-row{grid-template-columns:140px minmax(0,1fr)}}

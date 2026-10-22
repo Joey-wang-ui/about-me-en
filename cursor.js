@@ -3,6 +3,7 @@
   'use strict';
   const root = document.documentElement;
   const finePointer = matchMedia('(any-pointer: fine)');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const layer = document.createElement('div');
   layer.className = 'cursor-layer';
   layer.setAttribute('aria-hidden', 'true');
@@ -11,19 +12,40 @@
   layer.append(glow);
   document.body.append(layer);
 
-  let x = 0, y = 0, frame = 0;
+  let x = 0, y = 0, drawX = 0, drawY = 0, frame = 0, lastPaint = 0;
   let hasPosition = false, inside = false, visible = false;
   function updateHover(target) {
     const interactive = target instanceof Element && target.closest('a,button,[role="button"],input,select,textarea');
     glow.classList.toggle('is-hovering', !!interactive);
   }
-  function paint() {
+  function render() {
+    glow.style.transform = `translate3d(${drawX}px,${drawY}px,0)`;
+  }
+  function paint(now) {
     frame = 0;
-    // Coalesce pointer events into one paint without adding a trailing offset.
-    glow.style.transform = `translate3d(${x}px,${y}px,0)`;
+    if (!visible) return;
+    const dt = Math.min(64, Math.max(1, now - lastPaint));
+    lastPaint = now;
+    // Ease toward the real pointer at the same speed on different refresh rates.
+    const follow = reducedMotion.matches ? 1 : 1 - Math.exp(-dt / 80);
+    drawX += (x - drawX) * follow;
+    drawY += (y - drawY) * follow;
+    // Keep fast sweeps close enough to the actual click position.
+    const distance = Math.hypot(x - drawX, y - drawY);
+    if (distance > 96) {
+      drawX = x - (x - drawX) * 96 / distance;
+      drawY = y - (y - drawY) * 96 / distance;
+    }
+    const settled = Math.hypot(x - drawX, y - drawY) < .1;
+    if (settled) { drawX = x; drawY = y; }
+    render();
+    if (!settled) frame = requestAnimationFrame(paint);
   }
   function requestPaint() {
-    if (!frame) frame = requestAnimationFrame(paint);
+    if (!frame) {
+      lastPaint = performance.now();
+      frame = requestAnimationFrame(paint);
+    }
   }
   function hide(releaseNative = false) {
     visible = false;
@@ -35,7 +57,7 @@
   }
   function show() {
     if (!finePointer.matches || !hasPosition || document.hidden) return;
-    if (!visible) paint();
+    if (!visible) { drawX = x; drawY = y; render(); }
     visible = true;
     root.classList.add('has-glow-cursor');
     layer.classList.add('is-visible');
@@ -98,5 +120,8 @@
   });
   finePointer.addEventListener('change', () => {
     if (!finePointer.matches) hide(true);
+  });
+  reducedMotion.addEventListener('change', () => {
+    if (visible) requestPaint();
   });
 })();

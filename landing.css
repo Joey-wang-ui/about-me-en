@@ -87,7 +87,7 @@ html:not(.is-enhanced) .chapter-library>#contact{width:min(1200px,calc(100% - 40
 @media(max-width:600px){.intro-charm{width:66px;height:66px;margin-bottom:22px}}
 
 /* Clear, regular-weight reading type inspired by the supplied chapter reference. */
-.chapter-dialog{--reader-ink:#30302d;--reader-muted:#686862}
+.chapter-dialog{--reader-ink:#30302d;--reader-muted:#686862;--reader-heading:Nunito,"PingFang SC","Microsoft YaHei",sans-serif}
 [data-theme=night] .chapter-dialog{--reader-ink:#eeeee8;--reader-muted:#bfc3ba}
 .chapter-content,.chapter-introduction{--body:Agrandir,Arial,sans-serif;--pixel:var(--body);--reader-size:clamp(18px,1.4vw,22px);font-family:var(--body);font-weight:400;font-synthesis:none;letter-spacing:0;color:var(--reader-ink)}
 .chapter-introduction{max-width:60ch;font-size:var(--reader-size);line-height:1.45;color:var(--reader-muted)}
@@ -96,6 +96,10 @@ html:not(.is-enhanced) .chapter-library>#contact{width:min(1200px,calc(100% - 40
 .chapter-content .research-row{padding-block:22px}
 .chapter-content :is(.experience-body,.honors-list,.beyond-list) li+li{margin-top:.85em}
 .chapter-content>#contact>p{font:400 var(--reader-size)/1.5 var(--body);letter-spacing:0;color:var(--reader-ink)}
+/* Rounded, stronger headings contrast with the lighter Agrandir reading copy. */
+#chapter-heading,.chapter-content :is(h2,h3,h4,.tool-row>strong,.honors-list strong,.file-tabs strong){font-family:var(--reader-heading);font-weight:750}
+.chapter-content :is(h2,h3,h4){letter-spacing:-.025em;line-height:1.2}
+html[lang=zh-CN] .chapter-content :is(h2,h3,h4){letter-spacing:.01em}
 @media(max-width:700px){.chapter-content,.chapter-introduction{--reader-size:18px}.chapter-content .experience-date>.row-number{position:static}}
 
 .site-footer .landing-linkedin{align-self:flex-end;font:600 12px/1.5 var(--body);color:var(--plum);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}

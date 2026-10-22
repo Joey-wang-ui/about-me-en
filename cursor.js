@@ -33,7 +33,7 @@
     } else {
       // A critically damped spring carries velocity through starts and turns.
       // Its exact step stays smooth across refresh rates, without distance snaps.
-      const frequency = 34;
+      const frequency = 26;
       const decay = Math.exp(-frequency * dt);
       const offsetX = drawX - x, offsetY = drawY - y;
       const carryX = velocityX + frequency * offsetX;

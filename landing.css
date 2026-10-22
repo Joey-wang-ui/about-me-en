@@ -143,17 +143,8 @@ html[lang=zh-CN] .chapter-introduction{line-height:1.65}
 @keyframes language-ripple{from{opacity:.8;transform:scale(.8)}to{opacity:0;transform:scale(1.55)}}
 @media(prefers-reduced-motion:reduce){.chapter-glyph{transform:none!important;cursor:pointer}.chapter-art{animation:none!important;translate:none!important;rotate:none!important;scale:none!important;will-change:auto}}
 
-/* The viewport clips the soft light while leaving every underlying hit area intact. */
-.cursor-layer{position:fixed;inset:0;z-index:2147483647;overflow:clip;contain:strict;pointer-events:none!important;opacity:0;transition:opacity .14s ease}
-.cursor-layer.is-visible{opacity:1}
-.soft-cursor{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none!important;will-change:transform}
-.soft-cursor::before{content:"";position:absolute;left:-28px;top:-28px;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,transparent 0%,transparent 18%,#ead7f03d 30%,#c4a5dd73 43%,#cfb6df3d 56%,#decce80f 68%,transparent 78%);filter:blur(3px);transform:scale(1);opacity:.9;transition:transform .2s cubic-bezier(.2,.7,.25,1),opacity .2s ease}
-.soft-cursor.is-hovering::before{transform:scale(1.23);opacity:1}
-.soft-cursor.is-pressed::before{transform:scale(.82);opacity:1}
-[data-theme=night] .soft-cursor::before{background:radial-gradient(circle,transparent 0%,transparent 18%,#dec4ee3d 30%,#c6a4e06b 43%,#b79bd738 56%,#cbb8e012 68%,transparent 78%)}
+/* Use the jelly arrow at the browser’s actual pointer position. */
 @media(any-pointer:fine){html.has-jelly-cursor,html.has-jelly-cursor *,html.has-jelly-cursor *::before,html.has-jelly-cursor *::after,html.has-jelly-cursor dialog::backdrop{cursor:url('assets/jelly-cursor.svg') 3 2,auto!important}}
-@media(prefers-reduced-motion:reduce){.cursor-layer,.soft-cursor::before{transition:none}.soft-cursor::before{transform:none!important}}
-@media print{.cursor-layer{display:none!important}}
 
 /* Keep company marks alongside their names without narrowing the role text. */
 .company-heading{display:flex;align-items:center;gap:14px;margin-bottom:12px;min-width:0}

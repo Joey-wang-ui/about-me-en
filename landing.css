@@ -137,14 +137,19 @@ html[lang=zh-CN] .chapter-introduction{line-height:1.65}
 .chapter-object.is-touching .chapter-art{animation-play-state:paused}
 .chapter-object.is-pulling .chapter-glyph{cursor:grabbing}
 .chapter-stage{overflow:clip;overflow-clip-margin:20px}
-.language-link{position:relative;isolation:isolate}
+.language-link{position:relative}
+.language-toggle{isolation:isolate}
+.language-name{position:relative;z-index:1;display:inline-block}
+.language-toggle::before{content:"";position:absolute;inset:1px;border-radius:inherit;pointer-events:none;opacity:0;background:linear-gradient(110deg,transparent 34%,#fff9 48%,#e3c9f147 56%,transparent 67%);background-size:260% 100%;background-position:160% 50%}
+.language-toggle.is-switching::before{animation:language-sheen .56s ease-out both}
 .language-toggle::after{content:"";position:absolute;inset:-6px -9px;border:1px solid color-mix(in srgb,var(--plum) 55%,transparent);border-radius:999px;background:color-mix(in srgb,var(--plum) 6%,transparent);opacity:0;pointer-events:none}
-.language-toggle.is-switching::after{animation:language-ripple .46s ease-out both}
+.language-toggle.is-switching::after{animation:language-ripple .56s ease-out both}
+@keyframes language-sheen{0%{opacity:0;background-position:160% 50%}20%{opacity:.85}75%{opacity:.65}100%{opacity:0;background-position:-60% 50%}}
 @keyframes language-ripple{from{opacity:.8;transform:scale(.8)}to{opacity:0;transform:scale(1.55)}}
 @media(prefers-reduced-motion:reduce){.chapter-glyph{transform:none!important;cursor:pointer}.chapter-art{animation:none!important;translate:none!important;rotate:none!important;scale:none!important;will-change:auto}}
 
 /* Use the jelly arrow at the browser’s actual pointer position. */
-@media(any-pointer:fine){html.has-jelly-cursor,html.has-jelly-cursor *,html.has-jelly-cursor *::before,html.has-jelly-cursor *::after,html.has-jelly-cursor dialog::backdrop{cursor:url('assets/jelly-cursor.svg') 3 2,auto!important}}
+@media(any-pointer:fine){html.has-jelly-cursor,html.has-jelly-cursor *,html.has-jelly-cursor *::before,html.has-jelly-cursor *::after,html.has-jelly-cursor dialog::backdrop{cursor:url('assets/jelly-cursor.svg?v=small-2') 2 2,auto!important}}
 
 /* Keep company marks alongside their names without narrowing the role text. */
 .company-heading{display:flex;align-items:center;gap:14px;margin-bottom:12px;min-width:0}

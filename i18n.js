@@ -265,18 +265,24 @@
     button.classList.add('is-switching');
     animateSwitchElement(button, [
       { transform: 'scale(1)' },
-      { transform: 'scale(.9,1.08)', offset: .2 },
-      { transform: 'scale(1.06,.96)', offset: .48 },
-      { transform: 'scale(.99,1.015)', offset: .76 },
+      { transform: 'scale(.94,1.035)', offset: .16 },
+      { transform: 'scale(1.04,.975)', offset: .4 },
+      { transform: 'scale(.995,1.01)', offset: .7 },
       { transform: 'scale(1)' },
-    ], { duration: 460, easing: 'cubic-bezier(.2,.7,.25,1)' }, () => button.classList.remove('is-switching'));
+    ], { duration: 560, easing: 'cubic-bezier(.2,.7,.25,1)' }, () => button.classList.remove('is-switching'));
+    const label = button.querySelector('.language-name');
+    if (label) animateSwitchElement(label, [
+      { opacity: 0, transform: 'translateY(5px)', filter: 'blur(1px)' },
+      { opacity: 1, transform: 'translateY(-1px)', filter: 'blur(0)', offset: .75 },
+      { opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' },
+    ], { duration: 340, easing: 'cubic-bezier(.2,.7,.25,1)' });
     const inChapter = document.querySelector('.chapter-dialog').open;
     const selector = inChapter ? '.chapter-reader-head,.chapter-content,.chapter-caption' : '.main-nav,.hero-topline,.letter-label,.letter-description,.landing-introduction';
-    document.querySelectorAll(selector).forEach(element => {
+    document.querySelectorAll(selector).forEach((element, index) => {
       animateSwitchElement(element, [
-        { opacity: .45 },
-        { opacity: 1 },
-      ], { duration: 240, easing: 'ease-out' });
+        { opacity: .35, transform: 'translateY(5px)' },
+        { opacity: 1, transform: 'translateY(0)' },
+      ], { duration: 360, delay: Math.min(index * 16, 64), fill: 'backwards', easing: 'cubic-bezier(.2,.7,.25,1)' });
     });
   }
   switchMotion.addEventListener('change', () => {

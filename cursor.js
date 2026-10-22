@@ -54,19 +54,19 @@
       frame = requestAnimationFrame(paint);
     }
   }
-  function hide(releaseNative = false) {
+  function hide(releaseCursor = false) {
     visible = false;
     cancelAnimationFrame(frame);
     frame = 0;
     layer.classList.remove('is-visible');
     glow.classList.remove('is-pressed', 'is-hovering');
-    if (releaseNative) root.classList.remove('has-glow-cursor');
+    if (releaseCursor) root.classList.remove('has-jelly-cursor');
   }
   function show() {
     if (!finePointer.matches || !hasPosition || document.hidden) return;
     if (!visible) { drawX = x; drawY = y; velocityX = velocityY = 0; render(); }
     visible = true;
-    root.classList.add('has-glow-cursor');
+    root.classList.add('has-jelly-cursor');
     layer.classList.add('is-visible');
   }
   function syncContainer() {

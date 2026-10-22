@@ -147,11 +147,11 @@ html[lang=zh-CN] .chapter-introduction{line-height:1.65}
 .cursor-layer{position:fixed;inset:0;z-index:2147483647;overflow:clip;contain:strict;pointer-events:none!important;opacity:0;transition:opacity .14s ease}
 .cursor-layer.is-visible{opacity:1}
 .soft-cursor{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none!important;will-change:transform}
-.soft-cursor::before{content:"";position:absolute;left:-24px;top:-24px;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle,#fffdf6cc 0%,#ead7f0a8 16%,#c4a5dd6b 34%,#cfb6df28 52%,#decce80a 65%,transparent 74%);filter:blur(1.5px);transform:scale(1);opacity:.9;transition:transform .2s cubic-bezier(.2,.7,.25,1),opacity .2s ease}
+.soft-cursor::before{content:"";position:absolute;left:-28px;top:-28px;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,transparent 0%,transparent 18%,#ead7f03d 30%,#c4a5dd73 43%,#cfb6df3d 56%,#decce80f 68%,transparent 78%);filter:blur(3px);transform:scale(1);opacity:.9;transition:transform .2s cubic-bezier(.2,.7,.25,1),opacity .2s ease}
 .soft-cursor.is-hovering::before{transform:scale(1.23);opacity:1}
 .soft-cursor.is-pressed::before{transform:scale(.82);opacity:1}
-[data-theme=night] .soft-cursor::before{background:radial-gradient(circle,#fff7eac9 0%,#dec4ee9c 16%,#c6a4e05e 34%,#b79bd72b 52%,#cbb8e00a 65%,transparent 74%)}
-@media(any-pointer:fine){html.has-glow-cursor,html.has-glow-cursor *,html.has-glow-cursor *::before,html.has-glow-cursor *::after,html.has-glow-cursor dialog::backdrop{cursor:none!important}}
+[data-theme=night] .soft-cursor::before{background:radial-gradient(circle,transparent 0%,transparent 18%,#dec4ee3d 30%,#c6a4e06b 43%,#b79bd738 56%,#cbb8e012 68%,transparent 78%)}
+@media(any-pointer:fine){html.has-jelly-cursor,html.has-jelly-cursor *,html.has-jelly-cursor *::before,html.has-jelly-cursor *::after,html.has-jelly-cursor dialog::backdrop{cursor:url('assets/jelly-cursor.svg') 3 2,auto!important}}
 @media(prefers-reduced-motion:reduce){.cursor-layer,.soft-cursor::before{transition:none}.soft-cursor::before{transform:none!important}}
 @media print{.cursor-layer{display:none!important}}
 

@@ -12,6 +12,14 @@ body{min-height:100svh;display:flex;flex-direction:column}
 .joey-letter{padding-bottom:8px}
 .joey-glyph{width:94%;margin-inline:auto;transform:translateY(var(--jelly-rise,0px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
 .joey-letter:hover .joey-glyph{transform:translateY(var(--jelly-rise,-3px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
+/* A shallow arch with the outer letters leaning gently toward the center. */
+.joey-rest{--arch-step:clamp(3px,.8vw,12px)}
+.joey-letter{--arch-lift:calc(var(--arch-step)*.5);--arch-tilt:2.5deg}
+.joey-letter:nth-child(2){--arch-lift:calc(var(--arch-step)*-1);--arch-tilt:.8deg}
+.joey-letter:nth-child(3){--arch-lift:calc(var(--arch-step)*-1);--arch-tilt:-.8deg}
+.joey-letter:nth-child(4){--arch-tilt:-2.5deg}
+.joey-letter .joey-glyph{translate:0 var(--arch-lift);rotate:var(--arch-tilt)}
+@media(prefers-reduced-motion:reduce){.joey-letter .joey-glyph{translate:0 var(--arch-lift)!important;rotate:var(--arch-tilt)!important}}
 .joey-letter.is-touching .jelly-art{animation-play-state:paused}
 .is-enhanced .chapter-library{display:none}
 .site-footer{flex-shrink:0;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:55px;align-items:end;margin-top:0;padding:21px 0 27px;font-family:var(--body);font-size:12px}

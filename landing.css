@@ -10,7 +10,7 @@ body{min-height:100svh;display:flex;flex-direction:column}
 .letter-label>span{font-size:13px}
 .letter-description{display:block;text-align:center;margin-top:5px;font:12px/1.5 var(--body);letter-spacing:.1px;color:var(--muted)}
 .joey-letter{padding-bottom:8px}
-.joey-glyph{transform:translateY(var(--jelly-rise,0px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
+.joey-glyph{width:94%;margin-inline:auto;transform:translateY(var(--jelly-rise,0px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
 .joey-letter:hover .joey-glyph{transform:translateY(var(--jelly-rise,-3px)) rotate(var(--jelly-lean,0deg)) scale(var(--touch-scale-x,1),var(--touch-scale-y,1))}
 .joey-letter.is-touching .jelly-art{animation-play-state:paused}
 .is-enhanced .chapter-library{display:none}
